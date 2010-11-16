@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plugin SYSTEM "PluginConfiguration.dtd">
+<plugin>
+	<name>MessageboardComunicationProcessingPlugin</name>
+	<classLocation/>
+	<className>sk.fiit.rabbit.adaptiveproxy.plugins.services.messageboard.MessageboardComunicationProcessingPlugin</className>
+	<types>
+		<type>RequestProcessingPlugin</type>
+		<type>ResponseProcessingPlugin</type>
+	</types>
+	<parameters>
+		<param name="bypassPattern">adaptive-proxy/messageboard_call</param>
+		<param name="generateResponse">true</param>
+		<param name="defaultLanguage">sk</param>
+		<param name="defaultVisibility">0</param>
+	</parameters>
+</plugin>
