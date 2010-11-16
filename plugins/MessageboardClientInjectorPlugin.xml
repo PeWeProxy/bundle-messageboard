@@ -4,6 +4,8 @@
 	<name>MessageboardClientInjectorPlugin</name>
 	<classLocation/>
 	<className>sk.fiit.rabbit.adaptiveproxy.plugins.services.messageboard.MessageboardClientInjectorPlugin</className>
+	<libraries>
+  	</libraries>
 	<types>
 		<type>ResponseProcessingPlugin</type>
 	</types>
