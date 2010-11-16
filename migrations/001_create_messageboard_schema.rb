@@ -4,13 +4,13 @@ class CreateSchema < ActiveRecord::Migration
       t.integer :id, :limit => 11
       t.string :userid, :limit => 32
       t.timestamp :datetime
-      t.url, :string, :limit => 4000
+      t.string, :url, :limit => 4000
       t.text :text
     end
 
-    add_index :id, :index
+	add_index :messageboard_messages, :url, [:url, :userid]
 
-    create_table :messageboard_userPrefferences do |t|
+    create_table :messageboard_user_preferences do |t|
       t.integer :id, :limit => 11	
       t.string :userid, :limit => 32
       t.string :messageboard_nick, :limit => 12
@@ -18,11 +18,11 @@ class CreateSchema < ActiveRecord::Migration
       t.boolean visibility
     end
 
-    add_index :id
+    add_index :messageboard_user_preferences, :userid
   end
 
   def self.down
     remove_table :messageboard_messages
-    remove_table :messageboard_userPrefferences
+    remove_table :messageboard_user_preferences
   end
 end
