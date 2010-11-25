@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import sk.fiit.peweproxy.headers.RequestHeader;
@@ -54,25 +55,25 @@ public class MessageboardComunicationProcessingPlugin  extends JavaScriptInjecti
 		try {
 			connection = request.getServicesHandle().getService(DatabaseConnectionProviderService.class).getDatabaseConnection();
 
-			if (request.getClientRequestHeader().getRequestURI().contains("action=setMessageboardNick")) {
+			if (request.getRequestHeader().getRequestURI().contains("action=setMessageboardNick")) {
 				content = this.setMessageboardNick(connection, postData.get("uid"), postData.get("nick"));
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=getMessages")) {
-				content = this.getMessages(connection, Integer.parseInt(postData.get("from")), Integer.parseInt(postData.get("count")), Boolean.parseBoolean(postData.get("decorateLinks")), request.getClientRequestHeader().getField("Referer"));
+			if (request.getRequestHeader().getRequestURI().contains("action=getMessages")) {
+				content = this.getMessages(connection, Integer.parseInt(postData.get("from")), Integer.parseInt(postData.get("count")), Boolean.parseBoolean(postData.get("decorateLinks")), request.getRequestHeader().getField("Referer"));
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=messageboardNickExists")) {
+			if (request.getRequestHeader().getRequestURI().contains("action=messageboardNickExists")) {
 				content = this.messageboardNickExists(connection, postData.get("uid"), postData.get("nick")).toString();
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=addMessage")) {
-				content = this.addMessage(connection, postData.get("uid"), postData.get("nick"), postData.get("text"), request.getClientRequestHeader().getField("Referer"));
+			if (request.getRequestHeader().getRequestURI().contains("action=addMessage")) {
+				content = this.addMessage(connection, postData.get("uid"), postData.get("nick"), postData.get("text"), request.getRequestHeader().getField("Referer"));
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=getUserPreferences")) {
+			if (request.getRequestHeader().getRequestURI().contains("action=getUserPreferences")) {
 				content = this.getUserPreferences(connection, postData.get("uid")).toJSONString();
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=getMessageCount")) {
-				content = this.getMessageCount(connection, request.getClientRequestHeader().getField("Referer")) + "";
+			if (request.getRequestHeader().getRequestURI().contains("action=getMessageCount")) {
+				content = this.getMessageCount(connection, request.getRequestHeader().getField("Referer")) + "";
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=setShown")) {
+			if (request.getRequestHeader().getRequestURI().contains("action=setShown")) {
 				content = this.setShown(connection, postData.get("uid"), postData.get("shown"));
 			}
 			
