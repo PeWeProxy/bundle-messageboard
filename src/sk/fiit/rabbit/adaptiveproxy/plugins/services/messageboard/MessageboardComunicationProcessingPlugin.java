@@ -222,7 +222,7 @@ public class MessageboardComunicationProcessingPlugin  extends JavaScriptInjecti
 		LinkedHashMap m1;
 		
 		try {
-			stmt = connection.prepareStatement("SELECT `messageboard_nick`, `timestamp`, `text`, `url` FROM `messageboard_messages` LEFT JOIN `messageboard_user_preferences` ON `messageboard_messages`.`userid` = `messageboard_user_preferences`.`userid` WHERE `url` = ? ORDER BY `messageboard_messages`.`id` DESC LIMIT ?, ?;");
+			stmt = connection.prepareStatement("SELECT `messageboard_nick`, `datetime`, `text`, `url` FROM `messageboard_messages` LEFT JOIN `messageboard_user_preferences` ON `messageboard_messages`.`userid` = `messageboard_user_preferences`.`userid` WHERE `url` = ? ORDER BY `messageboard_messages`.`id` DESC LIMIT ?, ?;");
 			stmt.setString(1, url);
 			stmt.setInt(2, from);
 			stmt.setInt(3, count);
@@ -304,7 +304,7 @@ public class MessageboardComunicationProcessingPlugin  extends JavaScriptInjecti
 		messageText = messageText.replaceAll("\\<.*?>","");
 		
 		try {
-			stmt = connection.prepareStatement("INSERT INTO `messageboard_messages` (`userid`, `timestamp`, `url`, `text`) VALUES (?, ?, ?, ?);");
+			stmt = connection.prepareStatement("INSERT INTO `messageboard_messages` (`userid`, `datetime`, `url`, `text`) VALUES (?, ?, ?, ?);");
 			stmt.setString(1, uid);
 			stmt.setString(2, formatedTimeStamp);
 			stmt.setString(3, url);
