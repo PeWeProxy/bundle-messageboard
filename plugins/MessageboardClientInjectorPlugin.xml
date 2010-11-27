@@ -13,7 +13,434 @@
 		<param name="scriptUrl">${proxyurl}/FileSender/public/peweproxy_messageboard.js</param>
 		<param name="additionalHTML">
 <![CDATA[
+		<script type="text/javascript">
+		var peweproxy_keywords_htdocs_dir = '${proxyurl}/FileSender/keywordsImages';
+		</script>
+		<style type="text/css">
+			#peweproxy_addons_container{
+				position: absolute;
+				top: 0;
+				right: 0;
+				font-family: 'Trebuchet MS', Verdana, Arial;
+				font-size: 12px;
+				color: #2f2f2f;
+				text-align: left;
+			}
 
+			a.__peweproxy_addons_button{
+				position: absolute;
+				top: 0;
+				right: 0;
+				display: block;
+				background-repeat: no-repeat;
+				background-image: url('${proxyurl}/FileSender/messageboardImages/button_small.png');
+				width: 12px;
+				height: 12px;
+			}
+
+			a.__peweproxy_msgboard_button{
+				background-image:url("${proxyurl}/FileSender/messageboardImages/icon_messageboard.png");
+				color:#2F2F2F;
+				display:block;
+				font-size:10px;
+				height:18px;
+				margin-left:10px;
+				margin-top:2px;
+				padding-left:0;
+				padding-top:1px;
+				text-align:center;
+				text-decoration:none;
+				width:19px;
+				float: left;
+			}
+
+			a.__peweproxy_keywords_button{
+				background-image:url("${proxyurl}/FileSender/messageboardImages/icon_keywords.png");
+				display:block;
+				float:left;
+				height:21px;
+				margin-left:5px;
+				margin-top:2px;
+				width:16px;
+			}
+
+			div#peweproxy_addons_container .hidden{
+				display: none;
+			}
+
+			div#peweproxy_addons_container div#peweproxy_messageboard{
+				position:absolute;
+				right: 0;
+				top: 0;
+				width: 332px;
+			}
+
+			div.__peweproxy_messageboard_head{
+				height: 25px;
+				width: 332px;
+				background-image: url('${proxyurl}/FileSender/messageboardImages/messageboard_top.png');
+				float: left;
+			}
+
+			div.__peweproxy_messageboard_body{
+				background-image:url("${proxyurl}/FileSender/messageboardImages/messageboard_body.png");
+				float:left;
+				padding:0 20px 0 16px;
+				width:296px;
+			}
+
+			div.__peweproxy_messageboard_foot{
+				height: 16px;
+				width: 332px;
+				background-image: url('${proxyurl}/FileSender/messageboardImages/messageboard_bottom.png');
+				float: left;
+			}
+
+			a.__peweproxy_messageboard_closebutton{
+				display: block;
+				position: absolute;
+				right: 1px;
+				top: 1px;
+				height: 22px;
+				width: 22px;
+				background-image: url('${proxyurl}/FileSender/messageboardImages/close_button.png');
+				background-position: top;
+			}
+
+			a.__peweproxy_messageboard_closebutton:hover{
+				background-position: bottom;
+			}
+
+			div#peweproxy_icon_banner{
+				position: absolute;
+				top: 0;
+				right: 0;
+				background-image: url('${proxyurl}/FileSender/messageboardImages/button_banner.png');
+				width: 59px;
+				height: 30px;
+			}
+
+			div#peweproxy_addons_container span.header{
+				background-position:left center;
+				background-repeat:no-repeat;
+				display:block;
+				font-size:17px;
+				height:22px;
+				margin-top:-5px;
+				padding-left:30px;
+			}
+			div#peweproxy_messageboard span.header{
+				background-image:url("${proxyurl}/FileSender/messageboardImages/bubble.png");
+			}
+			div#peweproxy_keywords span.header{
+				background-image:url("${proxyurl}/FileSender/messageboardImages/icon_keywords.png");
+				margin-bottom: 10px;
+			}
+
+			div#peweproxy_addons_container span.left_floated{
+				display: block;
+				float: left;
+			}
+
+			div#peweproxy_addons_container span.right_floated{
+				display: block;
+				float: right;
+			}
+
+			div#peweproxy_addons_container span.language_bar{
+				font-size:10px;
+				margin-top:5px;
+			}
+
+			div#peweproxy_addons_container span.language_bar a{
+				color: #8a8a2b;
+				text-decoration: none;
+			}
+
+			div#peweproxy_addons_container span.language_bar a:hover{
+				color: #46460a;
+				text-decoration: underline;
+			}
+
+			div#peweproxy_addons_container span.language_bar a.active{
+				text-decoration: underline;
+			}
+
+			div#peweproxy_messageboard div.block{
+				border-bottom:1px solid #B6B056;
+				margin: 0;
+				padding: 7px 0 2px;
+			}
+
+			div#peweproxy_messageboard div.block p{
+				margin: 0;
+				padding: 0;
+			}
+
+			div#peweproxy_messageboard div.lister{
+				text-align: center;
+				margin-top: 5px;
+			}
+
+			div#peweproxy_messageboard div.lister a{
+				color: #2f2f2f;
+				text-decoration: none;
+				padding: 0 5px;
+			}
+
+			div#peweproxy_messageboard div.lister a:hover{
+				text-decoration: underline;
+			}
+
+			div#peweproxy_messageboard div.lister a.active{
+				text-decoration: underline;
+				font-weight: bold;
+			}
+
+			div#peweproxy_messageboard div.block span.author{
+				color:#8A8A2B;
+				display:block;
+				margin-top:4px;
+				text-align:right;
+			}
+
+			div#peweproxy_messageboard div.block a, div#peweproxy_messageboard span.submit_as a:hover{
+				color: #383805;
+			}
+
+			div#peweproxy_messageboard div.block a:hover, div#peweproxy_messageboard span.submit_as a{
+				color: #8A8A2B;
+			}
+
+			div#peweproxy_messageboard textarea{
+				border:1px solid #78731E;
+				font-family:'Trebuchet MS',Verdana,Tahoma;
+				font-size:12px;
+				height:90px;
+				width:294px;
+				color: #222222;
+				background-color: white;
+			}
+
+			div#peweproxy_messageboard span.submit_as{
+				color:#8A8A2B;
+				display:block;
+				margin:5px 0 3px;
+			}
+
+			div#peweproxy_messageboard span.submit_as span{
+				color: #2f2f2f;
+				font-weight: bold;
+			}
+
+			div#peweproxy_messageboard a.submit{
+				background-color:#FFF993;
+				border:1px solid #78731E;
+				color:#2F2F2F;
+				float:right;
+				margin-top:2px;
+				padding:1px 5px;
+				text-decoration:none;
+			}
+
+			div#peweproxy_messageboard a.submit:hover{
+				border-color: #2f2f2f;
+				background-color: #dcd568;
+			}
+
+			#peweproxy_messageboard_change_nick input{
+				width: 100px;
+				border:1px solid #78731E;
+				font-family:'Trebuchet MS',Verdana,Tahoma;
+				font-size: 11px;
+				height: 14px;
+				color: #222222;
+				background-color: white;
+			}
+
+			#peweproxy_messageboard_text.empty{
+				color: gray;
+			}
+
+			#peweproxy_messageboard_preloader{
+				display:block;
+				float:left;
+				position:relative;
+				top:6px;
+			}
+
+		</style>
+
+		<div id="peweproxy_addons_container">
+			<a class="__peweproxy_addons_button" href="#"></a>
+			<div id="peweproxy_icon_banner" style="display:none">
+				<a class="__peweproxy_msgboard_button" href="#"></a>
+				<a class="__peweproxy_keywords_button" href="#"></a>
+			</div>
+			<div id="peweproxy_messageboard" style="display:none">
+				<div class="__peweproxy_messageboard_head">
+					<a class="__peweproxy_messageboard_closebutton" href="#"></a>
+				</div>
+
+				<div class="__peweproxy_messageboard_body">
+					<span class="header">
+						<span class="left_floated">Diskusia k stránke</span>
+						<span class="right_floated language_bar"><a href="#" class="active" onclick="return false;">SK</a> | <a onclick="return false;" href="#">EN</a></span>
+					</span>
+					<div class="block lister"><!-- content will be added by AJAX --></div>
+
+					<div id="peweproxy_messages"><!-- content will be added by AJAX --></div>
+					<div>
+						<span class="submit_as">
+							<span id="peweproxy_messageboard_nick_info"></span>
+							<span id="peweproxy_messageboard_nick">
+								<span></span>
+								<a href="#">(zmeniť)</a>
+							</span>
+
+							<span id="peweproxy_messageboard_change_nick" class="hidden">
+								<input maxlength="12" type="text" value="" onkeypress="peweproxy_changeNickInputHandleEnter(event)" />
+								<a href="#" onclick="peweproxy_messageboardChangeNick(); return false;">uložiť</a>
+							</span>
+						</span>
+						<textarea id="peweproxy_messageboard_text" class="empty" cols="34" rows="3">Sem vložte váš príspevok.</textarea>
+						<div id="peweproxy_messageboard_preloader"><img src="${proxyurl}/FileSender/messageboardImages/preloader.gif" alt="preloader"/></div>
+						<a href="#" class="submit" onclick="peweproxy_messageboard_send(); return false;">Odoslať</a>
+
+					</div>
+				</div>
+				<div class="__peweproxy_messageboard_foot"></div>
+			</div>
+
+			<style type="text/css">
+				div#peweproxy_keywords{
+					position: absolute;
+					top: 0;
+					right: 0;
+					width: 433px;
+					display:none;
+				}
+
+				div#peweproxy_keywords div{
+					clear: both;
+				}
+
+				div.__peweproxy_keywords_head{
+					height: 26px;
+					width: 433px;
+					background-image: url('${proxyurl}/FileSender/keywordsImages/keywords_top.png');
+					float: left;
+				}
+
+				div.__peweproxy_keywords_body{
+					background-image:url("${proxyurl}/FileSender/keywordsImages/keywords_body.png");
+					float:left;
+					padding:0 20px 0 16px;
+					width:397px;
+				}
+
+				div.__peweproxy_keywords_foot{
+					height: 15px;
+					width: 433px;
+					background-image: url('${proxyurl}/FileSender/keywordsImages/keywords_bottom.png');
+					float: left;
+				}
+
+				a.__peweproxy_keywords_closebutton{
+					display: block;
+					position: absolute;
+					right: 1px;
+					top: 1px;
+					height: 22px;
+					width: 22px;
+					background-image: url('${proxyurl}/FileSender/keywordsImages/close_button.png');
+					background-position: top;
+				}
+
+				a.__peweproxy_keywords_closebutton:hover{
+					background-position: bottom;
+				}
+
+				div#peweproxy_keywords_content{
+					width: 397px;
+				}
+				div#peweproxy_keywords_content table th{
+					background-color: #d2d28b;
+				}
+				div#peweproxy_keywords_content table tr, div#peweproxy_keywords_content table th{
+					border-left: 2px solid #fcfcec;
+				}
+				div#peweproxy_keywords_content table tr.odd td{
+					background-color: #f6f6c2;
+				}
+				div#peweproxy_keywords_content table a img{
+					border: none;
+				}
+				div#peweproxy_keywords_content table{
+					border-collapse: collapse;
+				}
+				div#peweproxy_keywords_content table input{
+					border: 1px solid #78731e;
+					font-family: 'Trebuchet MS', Tahoma, Arial;
+					font-size: 12px;
+				}
+				div#peweproxy_keywords_content table input.term{
+					width: 173px;
+				}
+				div#peweproxy_keywords_content table input.type{
+					width: 50px;
+				}
+				div#peweproxy_keywords_content table input.relevance{
+					width: 40px;
+				}
+				div#peweproxy_keywords_content table span.editable{
+					display:none;
+				}
+			</style>
+
+			<div id="peweproxy_keywords">
+				<div class="__peweproxy_keywords_head">
+					<a class="__peweproxy_keywords_closebutton" href="#"></a>
+				</div>
+
+				<div class="__peweproxy_keywords_body">
+					<div>
+						<span class="header">
+							<span class="left_floated">Kľúčové slová stránky</span>
+							<span class="right_floated language_bar"><a href="#" class="active" onclick="return false;">SK</a> | <a onclick="return false;" href="#">EN</a></span>
+						</span>
+					</div>
+					<div id="peweproxy_keywords_content">
+						<div class="__peweproxy_keyword">
+							<table>
+								<tr>
+									<th style="width: 179px">Kľúčové slovo</th>
+									<th style="width: 56px">Typ</th>
+									<th style="width: 43px">Váha</th>
+									<th style="width: 57px">Zdroj</th>
+									<th style="width: 46px">Akcie</th>
+								</tr>
+							</table>
+						</div>
+						<!-- content will be added by AJAX --></div>
+					<div>
+						add form
+					</div>
+				</div>
+				<div class="__peweproxy_keywords_foot"></div>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////
 <style type="text/css">
 #peweproxy_messageboard_container{
 	position: absolute;
@@ -34,13 +461,13 @@ a.__peweproxy_msgboard_button{
 }
 
 a.__peweproxy_msgboard_button.small{
-	background-image: url('${proxyurl}/FileSender/public/messageboardImages/button_small.png');
+	background-image: url('${proxyurl}/FileSender/messageboardImages/button_small.png');
 	width: 12px;
 	height: 12px;
 }
 
 a.__peweproxy_msgboard_button.big{
-	background-image:url("${proxyurl}/FileSender/public/messageboardImages/button_big.png");
+	background-image:url("${proxyurl}/FileSender/messageboardImages/button_big.png");
 	color:#2F2F2F;
 	font-size:10px;
 	height:28px;
@@ -65,12 +492,12 @@ div#peweproxy_messageboard_container div#peweproxy_messageboard{
 div.__peweproxy_messageboard_head{
 	height: 25px;
 	width: 332px;
-	background-image: url('${proxyurl}/FileSender/public/messageboardImages/messageboard_top.png');
+	background-image: url('${proxyurl}/FileSender/messageboardImages/messageboard_top.png');
 	float: left;
 }
 
 div.__peweproxy_messageboard_body{
-	background-image:url("${proxyurl}/FileSender/public/messageboardImages/messageboard_body.png");
+	background-image:url("${proxyurl}/FileSender/messageboardImages/messageboard_body.png");
 	float:left;
 	padding:0 20px 0 16px;
 	width:296px;
@@ -79,7 +506,7 @@ div.__peweproxy_messageboard_body{
 div.__peweproxy_messageboard_foot{
 	height: 16px;
 	width: 332px;
-	background-image: url('${proxyurl}/FileSender/public/messageboardImages/messageboard_bottom.png');
+	background-image: url('${proxyurl}/FileSender/messageboardImages/messageboard_bottom.png');
 	float: left;
 }
 
@@ -90,7 +517,7 @@ a.__peweproxy_messageboard_closebutton{
 	top: 1px;
 	height: 22px;
 	width: 22px;
-	background-image: url('${proxyurl}/FileSender/public/messageboardImages/close_button.png');
+	background-image: url('${proxyurl}/FileSender/messageboardImages/close_button.png');
 	background-position: top;
 }
 
@@ -99,7 +526,7 @@ a.__peweproxy_messageboard_closebutton:hover{
 }
 
 div#peweproxy_messageboard span.header{
-	background-image:url("${proxyurl}/FileSender/public/messageboardImages/bubble.png");
+	background-image:url("${proxyurl}/FileSender/messageboardImages/bubble.png");
 	background-position:left center;
 	background-repeat:no-repeat;
 	display:block;
@@ -272,7 +699,7 @@ div#peweproxy_messageboard a.submit:hover{
 							</span>
 						</span>
 						<textarea id="peweproxy_messageboard_text" class="empty" cols="34" rows="3">Sem vložte váš príspevok.</textarea>
-						<div id="peweproxy_messageboard_preloader"><img src="${proxyurl}/FileSender/public/messageboardImages/preloader.gif" alt="preloader"/></div>
+						<div id="peweproxy_messageboard_preloader"><img src="${proxyurl}/FileSender/messageboardImages/preloader.gif" alt="preloader"/></div>
 						<a href="#" class="submit" onclick="peweproxy_messageboard_send(); return false;">Odoslať</a>
 
 					</div>
