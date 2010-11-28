@@ -397,6 +397,23 @@
 				div#peweproxy_keywords_content table span.editable{
 					display:none;
 				}
+				form#peweproxy_keywords_add_form div{
+					border-top: 1px solid #d2d28b;
+					margin-top: 5px;
+					padding-top: 5px;
+				}
+				form#peweproxy_keywords_add_form p{
+					margin: 0;
+				}
+				form#peweproxy_keywords_add_form input{
+					border: 1px solid #78731e;
+					font-family: 'Trebuchet MS', Verdana, Tahoma, Arial;
+					font-size: 12px;
+				}
+				form#peweproxy_keywords_add_form input.submit{
+					background-color: #fff993;
+					border: 1px solid #999241;
+				}
 			</style>
 
 			<div id="peweproxy_keywords">
@@ -423,10 +440,16 @@
 								</tr>
 							</table>
 						</div>
-						<!-- content will be added by AJAX --></div>
-					<div>
-						add form
 					</div>
+					<form id="peweproxy_keywords_add_form" action="">
+						<div>
+							<p>Pridať kľúčové slovo</p>
+							<input type="text" style="width:170px" name="term" value="Slovo" id="peweproxy_keywords_add_term" onfocus="if (this.value=='Slovo') this.value = ''" onblur="if (this.value == '') this.value = 'Slovo'" />
+							<input type="text" style="width:55px" name="type" value="Typ" id="peweproxy_keywords_add_type" onfocus="if (this.value=='Typ') this.value = ''" onblur="if (this.value == '') this.value = 'Typ'" />
+							<input type="text" style="width:40px" name="relevance" value="Váha" id="peweproxy_keywords_add_relevance" onfocus="if (this.value=='Váha') this.value = ''" onblur="if (this.value == '') this.value = 'Váha'" />
+							<input type="submit" value="Pridať" class="submit" />
+						</div>
+					</form>
 				</div>
 				<div class="__peweproxy_keywords_foot"></div>
 			</div>
