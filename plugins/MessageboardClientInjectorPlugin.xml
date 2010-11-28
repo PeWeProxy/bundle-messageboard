@@ -367,7 +367,7 @@
 				div#peweproxy_keywords_content table th{
 					background-color: #d2d28b;
 				}
-				div#peweproxy_keywords_content table tr, div#peweproxy_keywords_content table th{
+				div#peweproxy_keywords_content table td, div#peweproxy_keywords_content table th{
 					border-left: 2px solid #fcfcec;
 				}
 				div#peweproxy_keywords_content table tr.odd td{
@@ -413,6 +413,9 @@
 				form#peweproxy_keywords_add_form input.submit{
 					background-color: #fff993;
 					border: 1px solid #999241;
+				}
+				div#peweproxy_keywords_content table tr td.buttons a{
+					margin-left: 5px;
 				}
 			</style>
 

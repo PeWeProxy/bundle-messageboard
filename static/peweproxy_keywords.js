@@ -82,29 +82,29 @@ function peweproxy_keywords_save(id){
 
 function peweproxy_get_keywords(){
 	var template = '<tr class="row[:id:] keyword_row">'+
-	'<td style="width: 179px">'+
-	'<span class="static term">[:term:]</span>'+
-	'<span class="editable"><input type="text" class="term" value="[:term:]"/></span>'+
-	'</td>'+
-	'<td style="width: 56px">'+
-	'<span class="static type">[:type:]</span>'+
-	'<span class="editable"><input type="text" class="type" value="[:type:]"/></span>'+
-	'</td>'+
-	'<td style="width: 43px">'+
-	'<span class="static relevance">[:relevance:]</span>'+
-	'<span class="editable"><input type="text" class="relevance" value="[:relevance:]"/></span>'+
-	'</td>'+
-	'<td style="width: 57px">[:source:]</td>'+
-	'<td style="width: 46px">'+
-	'<span class="static">'+
-	'<a href="#" onclick="peweproxy_keywords_edit([:id:]); return false"><img src="'+peweproxy_keywords_htdocs_dir+'/edit_icon.png" alt="edit" /></a>'+
-	'</span>'+
-	'<span class="editable">'+
-	'<a href="#" onclick="peweproxy_keywords_save([:id:]); return false;"><img src="'+peweproxy_keywords_htdocs_dir+'/ok_icon.png" alt="save" /></a>'+
-	'</span>'+
-	'<a href="#" onclick="peweproxy_keywords_delete([:id:]); return false;"><img src="'+peweproxy_keywords_htdocs_dir+'/delete_icon.png" alt="delete" /></a>'+
-	'</td>'+
-	'</tr>';
+						'<td style="width: 179px">'+
+							'<span class="static term">[:term:]</span>'+
+							'<span class="editable"><input type="text" class="term" value="[:term:]"/></span>'+
+						'</td>'+
+						'<td style="width: 56px">'+
+							'<span class="static type">[:type:]</span>'+
+							'<span class="editable"><input type="text" class="type" value="[:type:]"/></span>'+
+						'</td>'+
+						'<td style="width: 43px">'+
+							'<span class="static relevance">[:relevance:]</span>'+
+							'<span class="editable"><input type="text" class="relevance" value="[:relevance:]"/></span>'+
+						'</td>'+
+						'<td style="width: 57px">[:source:]</td>'+
+						'<td style="width: 46px" class="buttons">'+
+							'<span class="static">'+
+								'<a href="#" onclick="peweproxy_keywords_edit([:id:]); return false"><img src="'+peweproxy_keywords_htdocs_dir+'/edit_icon.png" alt="edit" /></a>'+
+							'</span>'+
+							'<span class="editable">'+
+								'<a href="#" onclick="peweproxy_keywords_save([:id:]); return false;"><img src="'+peweproxy_keywords_htdocs_dir+'/ok_icon.png" alt="save" /></a>'+
+							'</span>'+
+							'<a href="#" onclick="peweproxy_keywords_delete([:id:]); return false;"><img src="'+peweproxy_keywords_htdocs_dir+'/delete_icon.png" alt="delete" /></a>'+
+						'</td>'+
+					'</tr>';
 	var temp = function($) {
 		$.post(peweproxy_url+'?action=getKeyWords','data=1',function(data){
 			keywords = eval('('+data+')');
