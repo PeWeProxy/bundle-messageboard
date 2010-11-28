@@ -383,6 +383,7 @@
 					border: 1px solid #78731e;
 					font-family: 'Trebuchet MS', Tahoma, Arial;
 					font-size: 12px;
+					height: 17px;
 				}
 				div#peweproxy_keywords_content table input.term{
 					width: 173px;
