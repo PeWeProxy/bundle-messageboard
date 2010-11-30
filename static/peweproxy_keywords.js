@@ -1,3 +1,5 @@
+var peweproxy_url_keywords = 'adaptive-proxy/key_words_call.html'
+
 var temp = function($) {
 	$(document).ready(function(){
 		$('div#peweproxy_icon_banner a.__peweproxy_keywords_button').click(function(){
@@ -18,7 +20,7 @@ var temp = function($) {
 		});
 		$('form#peweproxy_keywords_add_form').submit(function(){
 			post_data = $(this).serialize();
-			$.post(peweproxy_url+'?action=addKeyWord',post_data,function(data){
+			$.post(peweproxy_url_keywords+'?action=addKeyWord',post_data+'&checksum='+_ap_checksum,function(data){
 				response = $.trim(data);
 				if (response == 'OK'){
 					peweproxy_get_keywords();
@@ -44,7 +46,7 @@ function peweproxy_keywords_edit(id){
 function peweproxy_keywords_delete(id){
 	var temp = function($) {
 		if (confirm('Skutočne odstrániť kľúčové slovo '+$('div#peweproxy_keywords_content table tr.row'+id+' span.term').html()+'?')){
-			$.post(peweproxy_url+'?action=removeKeyWord',{
+			$.post(peweproxy_url_keywords+'?action=removeKeyWord',{
 				id:id
 			},function(data){
 				response = $.trim(data);
@@ -67,14 +69,14 @@ function peweproxy_keywords_save(id){
 			relevance: table.find("tr.row"+id+" input.relevance").val(),
 			type: table.find("tr.row"+id+" input.type").val()
 		}
-		$.post(peweproxy_url+'?action=editKeyWord',post_data, function(data){
+		$.post(peweproxy_url_keywords+'?action=editKeyWord',post_data, function(data){
 			response = $.trim(data);
 			if (response == 'OK'){
 				peweproxy_get_keywords()
 			} else if (response == 'TERM_EXISTS'){
 				alert('Kľúčové slovo '+post_data.term+' už existuje');
 			} else {
-				alert('Pri ukladaní kľúčového slova nastala chyba');
+				alert('Pri ukladaní kľúčového slova nastala chyba. Skonstrolujte správnosť údajov.');
 			}
 		});
 	} (adaptiveProxyJQuery);
@@ -106,7 +108,7 @@ function peweproxy_get_keywords(){
 						'</td>'+
 					'</tr>';
 	var temp = function($) {
-		$.post(peweproxy_url+'?action=getKeyWords','data=1',function(data){
+		$.post(peweproxy_url_keywords+'?action=getKeyWords','checksum='+_ap_checksum,function(data){
 			keywords = eval('('+data+')');
 			table = $('div#peweproxy_keywords_content table');
 			table.find("tr.keyword_row").remove();

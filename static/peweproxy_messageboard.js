@@ -1,10 +1,12 @@
-var smallButtonSelector = 'div#peweproxy_messageboard_container a.__peweproxy_msgboard_button.small';
-var bigButtonSelector = 'div#peweproxy_messageboard_container a.__peweproxy_msgboard_button.big';
+var smallButtonSelector = 'div#peweproxy_addons_container a.__peweproxy_addons_button';
+var peweproxy_addonIconBannerSelector = 'div#peweproxy_icon_banner';
+var messageboardButonSelector = 'div#peweproxy_icon_banner a.__peweproxy_msgboard_button';
+var renewSmallButtontonSelector = 'div#peweproxy_icon_banner a.__peweproxy_msgboard_button';
 var renewSmallButton = true;
 var messages_per_page = 5;
 var actual_from = 0;
 
-var peweproxy_url = 'adaptive-proxy/messageboard_call.html';
+var peweproxy_url_messageboard = 'adaptive-proxy/messageboard_call.html'
 
 var temp = function($) {
     $(document).ready(function(){
@@ -45,35 +47,30 @@ var temp = function($) {
         if (userPreferences.visibility == 1){
             renewSmallButton = false;
             $('#peweproxy_messageboard').show();
-            $(bigButtonSelector).addClass('hidden');
+            $(peweproxy_addonIconBannerSelector).addClass('hidden');
             $(smallButtonSelector).addClass('hidden');   
             peweproxy_getMessages(0);
         }
-        $(smallButtonSelector).mouseover(function(){
-            $(bigButtonSelector).css('background-position','30px').removeClass('hidden').animate({
-                'background-position' : '0px'
-            }, 'fast', function(){
-                $(this).html(getMessageCount());
+        $(smallButtonSelector).mouseenter(function(){
+            $(peweproxy_addonIconBannerSelector).removeClass('hidden').fadeIn('fast', function(){
+                $(messageboardButonSelector).html(getMessageCount());
             });
-        //(this).addClass('hidden');
         });
-        $(bigButtonSelector).mouseout(function(){
-            $(this).html('');
+        $(peweproxy_addonIconBannerSelector).mouseleave(function(){
+            $(messageboardButonSelector).html('');
             if (renewSmallButton){
                 $(smallButtonSelector).removeClass('hidden');
             }
-            $(this).animate({
-                'background-position' : '30px'
-            }, 'fast', function(){
-                $(this).addClass('hidden');
-            });
+            $(this).fadeOut('fast',function(){
+				$(this).addClass('hidden');
+			});
         });
-        $(bigButtonSelector).click(function(){
+        $(messageboardButonSelector).click(function(){
             setShown(true);
             $(this).blur();
             renewSmallButton = false;
             $('#peweproxy_messageboard').hide().removeClass('hidden').fadeIn('fast');
-            $(bigButtonSelector).addClass('hidden');
+            $(peweproxy_addonIconBannerSelector).addClass('hidden');
             $(smallButtonSelector).addClass('hidden');     
             peweproxy_getMessages(0);
             return false;
@@ -89,7 +86,7 @@ var temp = function($) {
     });
 
     $(document).scroll(function(){
-        $('#peweproxy_messageboard_container').animate({
+        $('#peweproxy_addons_container').animate({
             'top':$(document).scrollTop()
         }, 'fast');
     });
@@ -108,7 +105,7 @@ function peweproxy_messageboard_send(){
             alert('Správa nesmie byť prázdna.');
             return;
         }
-        $.post(peweproxy_url+"?action=addMessage", {
+        $.post(peweproxy_url_messageboard+"?action=addMessage", {
             text: text,
             uid: __peweproxy_uid
         },
@@ -142,7 +139,7 @@ function peweproxy_messageboardChangeNick(){
             $('#peweproxy_messageboard_nick').show();
             return;
         }
-        $.post(peweproxy_url+"?action=setMessageboardNick", {
+        $.post(peweproxy_url_messageboard+"?action=setMessageboardNick", {
             nick: nick,
             uid: __peweproxy_uid
         }, function(response){
@@ -164,7 +161,7 @@ function peweproxy_messageboardChangeNick(){
 function peweproxy_getMessages(from){
     var temp = function($) {
         if ($('#peweproxy_messageboard').css('display') == 'block'){
-          $.post(peweproxy_url+"?action=getMessages", {
+          $.post(peweproxy_url_messageboard+"?action=getMessages", {
               from : from,
               count: messages_per_page,
               decorateLinks: 1
@@ -223,7 +220,7 @@ function peweproxy_generateLister(from, total){
 function setShown(shown){
     var temp = function($) {
         shown = shown ? 1 : 0;
-        $.post(peweproxy_url+'?action=setShown', {
+        $.post(peweproxy_url_messageboard+'?action=setShown', {
             shown: shown,
             uid: __peweproxy_uid
         });
@@ -236,7 +233,7 @@ function getMessageCount(){
     var temp = function($) {
         retVal = $.ajax({
             async: false,
-            url: peweproxy_url+"?action=getMessageCount",
+            url: peweproxy_url_messageboard+"?action=getMessageCount",
             type: 'POST',
             data : {
                 action : 'getMessageCount'
@@ -251,7 +248,7 @@ function getUserPreferences(){
     var temp = function($) {
         retVal = $.ajax({
             async: false,
-            url: peweproxy_url+"?action=getUserPreferences",
+            url: peweproxy_url_messageboard+"?action=getUserPreferences",
             data: {
                 uid: __peweproxy_uid
             },
