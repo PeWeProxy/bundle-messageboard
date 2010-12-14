@@ -23,7 +23,7 @@ namespace :src do
       javac.src = 'src/**/*.java'
       javac.cp << 'external_libs/**/*.jar'
       javac.cp << "../../#{PROXY_DIR}/bin"
-			if File.exists?('/Bundlefile')
+			if File.exists?('Bundlefile')
 				File.read('Bundlefile').split.each do |dependency|
 					javac.cp << "../#{dependency}/bin"
 				end
