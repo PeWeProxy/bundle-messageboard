@@ -132,4 +132,4 @@ namespace :after do
   end
 end
 
-task :default => ["src:build", "src:jar", "src:defbuild", "migrations:migrate", "offline:build", "offline:schedule"]
+task :default => ["src:build", "src:jar", "migrations:migrate", "offline:build", "offline:schedule"] # "src:defbuild",
