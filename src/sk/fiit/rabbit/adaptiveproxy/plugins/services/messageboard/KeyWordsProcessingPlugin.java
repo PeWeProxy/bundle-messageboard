@@ -39,17 +39,17 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 		try {
 			connection = request.getServicesHandle().getService(DatabaseConnectionProviderService.class).getDatabaseConnection();
 
-			if (request.getClientRequestHeader().getRequestURI().contains("action=getKeyWords")) {
-				content = this.getKeyWords(connection, request.getClientRequestHeader().getField("Referer"), postData.get("checksum"));
+			if (request.getRequestHeader().getRequestURI().contains("action=getKeyWords")) {
+				content = this.getKeyWords(connection, request.getRequestHeader().getField("Referer"), postData.get("checksum"));
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=editKeyWord")) {
+			if (request.getRequestHeader().getRequestURI().contains("action=editKeyWord")) {
 				content = this.editKeyWord(connection, postData.get("id"), postData.get("term"), postData.get("relevance"), postData.get("type"));
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=removeKeyWord")) {
+			if (request.getRequestHeader().getRequestURI().contains("action=removeKeyWord")) {
 				content = this.removeKeyWord(connection, postData.get("id"));
 			}
-			if (request.getClientRequestHeader().getRequestURI().contains("action=addKeyWord")) {
-				content = this.addKeyWord(connection, request.getClientRequestHeader().getField("Referer"), postData.get("checksum"), postData.get("term"), postData.get("relevance"), postData.get("type"));
+			if (request.getRequestHeader().getRequestURI().contains("action=addKeyWord")) {
+				content = this.addKeyWord(connection, request.getRequestHeader().getField("Referer"), postData.get("checksum"), postData.get("term"), postData.get("relevance"), postData.get("type"));
 			}
 		} finally {
 			SqlUtils.close(connection);
