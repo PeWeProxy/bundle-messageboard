@@ -24,7 +24,7 @@ namespace :src do
       javac.src = 'src/**/*.java'
       javac.cp << 'external_libs/**/*.jar'
       javac.cp << "../../#{PROXY_DIR}/bin"
-      javac.cp << "../../#{CORE_PLUGINS_DIR}/bin"
+      javac.cp << "../#{CORE_PLUGINS_DIR}/bin"
       javac.output = 'bin'
     end
   end
