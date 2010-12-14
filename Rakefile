@@ -9,6 +9,7 @@ require 'rake'
 require 'logger'
 
 PROXY_DIR = 'adaptive-proxy'
+CORE_PLUGINS_DIR = "adaptive-proxy-coreplugins"
 
 # java offline tasks
 # directory (project name) => main class (including package)
@@ -23,6 +24,7 @@ namespace :src do
       javac.src = 'src/**/*.java'
       javac.cp << 'external_libs/**/*.jar'
       javac.cp << "../../#{PROXY_DIR}/bin"
+      javac.cp << "../../#{CORE_PLUGINS_DIR}/bin"
       javac.output = 'bin'
     end
   end
