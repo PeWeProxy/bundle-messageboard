@@ -11,6 +11,6 @@
 	<parameters>
 		<param name="bypassPattern">adaptive-proxy/key_words_call</param>
 		<param name="generateResponse">true</param>
-		<param name="scriptUrl">${proxyurl}/FileSender/peweproxy_keywords.js</param>
+		<param name="scriptUrl">${proxyurl}/FileSender/public/peweproxy_keywords.js</param>
 	</parameters>
 </plugin>
