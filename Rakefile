@@ -130,7 +130,7 @@ end
 
 namespace :after do
   desc "Run task after deploy"
-  task :after_deploy do
+  task :deploy do
     # Add code here to run after deploy
   end
 end
