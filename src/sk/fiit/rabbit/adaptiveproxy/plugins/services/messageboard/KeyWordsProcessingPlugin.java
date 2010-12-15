@@ -189,7 +189,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 				pageId = rs.getInt(1);
 			}
 			
-			if (pageId == -1) return "FAIL " + " pageid -1 exception";
+			if (pageId == -1) return "FAIL " + " pageid -1 exception ulr: " + url + "  \n    checksum: " + checksum;
 			
 			stmt = connection.prepareStatement("SELECT `pages_terms`.`id`, `pages_terms`.`active` FROM `pages_terms` JOIN `terms` ON `pages_terms`.`term_id` = `terms`.`id` WHERE `pages_terms`.`page_id` = ? AND `terms`.`label` = ?;");
 			stmt.setInt(1, pageId);
