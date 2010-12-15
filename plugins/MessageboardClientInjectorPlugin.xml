@@ -25,6 +25,7 @@
 				font-size: 12px;
 				color: #2f2f2f;
 				text-align: left;
+				z-index: 999;
 			}
 
 			a.__peweproxy_addons_button{
@@ -369,6 +370,7 @@
 				}
 				div#peweproxy_keywords_content table td, div#peweproxy_keywords_content table th{
 					border-left: 2px solid #fcfcec;
+					font-size: 12px;
 				}
 				div#peweproxy_keywords_content table tr.odd td{
 					background-color: #f6f6c2;
