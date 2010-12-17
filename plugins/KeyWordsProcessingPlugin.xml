@@ -4,6 +4,9 @@
 	<name>KeyWordsProcessingPlugin</name>
 	<classLocation/>
 	<className>sk.fiit.rabbit.adaptiveproxy.plugins.services.messageboard.KeyWordsProcessingPlugin</className>
+	<libraries>
+	    	<lib>json_simple-1.1.jar</lib>
+  	</libraries>
 	<types>
 		<type>RequestProcessingPlugin</type>
 		<type>ResponseProcessingPlugin</type>
