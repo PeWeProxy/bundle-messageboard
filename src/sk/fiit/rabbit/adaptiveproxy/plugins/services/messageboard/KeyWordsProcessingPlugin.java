@@ -67,7 +67,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 		
 		PreparedStatement stmt = null;
 		int dbTermId = -1;
-		String pageId = -1;
+		String pageId = "";
 		JSONObject keywords = new JSONObject();
 		LinkedList l1 = new LinkedList();
 		LinkedHashMap m1;
@@ -167,7 +167,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 	
 	private String addKeyWord(Connection connection, String url, String checksum, String term, String relevance, String type) {
 		PreparedStatement stmt = null;
-		String pageId = -1;
+		String pageId = "";
 		int resultCounter = 0;
 		java.util.Date today = new java.util.Date();
 		String timestamp = new Timestamp(today.getTime()).toString();
@@ -189,7 +189,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 				pageId = rs.getString(1);
 			}
 			
-			if (pageId == -1) return "FAIL " + " pageid -1 exception ulr: " + url + "  \n    checksum: " + checksum;
+			if (pageId.equals("")) return "FAIL " + " pageid -1 exception ulr: " + url + "  \n    checksum: " + checksum;
 			
 			stmt = connection.prepareStatement("SELECT `pages_terms`.`id`, `pages_terms`.`active` FROM `pages_terms` JOIN `terms` ON `pages_terms`.`term_id` = `terms`.`id` WHERE `pages_terms`.`page_id` = ? AND `terms`.`label` = ?;");
 			stmt.setString(1, pageId);
