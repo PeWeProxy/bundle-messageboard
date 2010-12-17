@@ -176,7 +176,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 		try {
 			if (Float.parseFloat(relevance) > 1) return "FAIL " + " floate.parseFloat exception";
 		} catch (Exception e) {
-			 return "FAIL " + e;
+			 return "FAIL 1 " + e;
 		}
 		
 		try {
@@ -225,7 +225,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 			return "OK";
 		} catch (SQLException e) {
 			logger.error("Could not add key word ", e);
-			return "FAIL " + e;
+			return "FAIL 2 " + e;
 		} finally {
 			SqlUtils.close(stmt);
 		}
