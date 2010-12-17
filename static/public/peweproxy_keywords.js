@@ -113,6 +113,7 @@ function peweproxy_get_keywords(){
 			table = $('div#peweproxy_keywords_content table');
 			table.find("tr.keyword_row").remove();
 			for (var keyword in keywords.keywords){
+			  if (keywords.keywords[keyword].term == undefined) continue;
 				row = template.replace(/\[:id:\]/g, keywords.keywords[keyword].id);
 				row = row.replace(/\[:term:\]/g, keywords.keywords[keyword].term);
 				row = row.replace(/\[:type:\]/g, keywords.keywords[keyword].type);
