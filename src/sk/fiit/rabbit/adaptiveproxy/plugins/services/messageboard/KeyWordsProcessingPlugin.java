@@ -67,7 +67,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 		
 		PreparedStatement stmt = null;
 		int dbTermId = -1;
-		int pageId = -1;
+		String pageId = -1;
 		JSONObject keywords = new JSONObject();
 		LinkedList l1 = new LinkedList();
 		LinkedHashMap m1;
@@ -79,11 +79,11 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 			stmt.execute();
 			ResultSet rs = stmt.getResultSet();
 			while (rs.next()) {
-				pageId = rs.getInt(1);
+				pageId = rs.getString(1);
 			}
 			
 			stmt = connection.prepareStatement("SELECT `pages_terms`.`id`, `terms`.`label`, `pages_terms`.`weight`, `terms`.`term_type`, `pages_terms`.`source` FROM `pages_terms` JOIN `terms` ON `pages_terms`.`term_id` = `terms`.`id` WHERE `pages_terms`.`page_id` = ? AND `pages_terms`.`active` = 1;");
-			stmt.setInt(1, pageId);
+			stmt.setString(1, pageId);
 			stmt.execute();
 			rs = stmt.getResultSet();
 			while (rs.next()) {
@@ -167,7 +167,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 	
 	private String addKeyWord(Connection connection, String url, String checksum, String term, String relevance, String type) {
 		PreparedStatement stmt = null;
-		int pageId = -1;
+		String pageId = -1;
 		int resultCounter = 0;
 		java.util.Date today = new java.util.Date();
 		String timestamp = new Timestamp(today.getTime()).toString();
@@ -186,13 +186,13 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 			stmt.execute();
 			ResultSet rs = stmt.getResultSet();
 			while (rs.next()) {
-				pageId = rs.getInt(1);
+				pageId = rs.getString(1);
 			}
 			
 			if (pageId == -1) return "FAIL " + " pageid -1 exception ulr: " + url + "  \n    checksum: " + checksum;
 			
 			stmt = connection.prepareStatement("SELECT `pages_terms`.`id`, `pages_terms`.`active` FROM `pages_terms` JOIN `terms` ON `pages_terms`.`term_id` = `terms`.`id` WHERE `pages_terms`.`page_id` = ? AND `terms`.`label` = ?;");
-			stmt.setInt(1, pageId);
+			stmt.setString(1, pageId);
 			stmt.setString(2, term);
 			stmt.execute();
 			rs = stmt.getResultSet();
@@ -215,7 +215,7 @@ public class KeyWordsProcessingPlugin  extends JavaScriptInjectingProcessingPlug
 	
 			
 			stmt = connection.prepareStatement("INSERT INTO `pages_terms` (`page_id`, `term_id`, `weight`, `created_at`, `updated_at`, `source`) VALUES (?, LAST_INSERT_ID(), ?, ?, ?, ?);");
-			stmt.setInt(1, pageId);
+			stmt.setString(1, pageId);
 			stmt.setFloat(2, Float.parseFloat(relevance));
 			stmt.setString(3, formatedTimeStamp);
 			stmt.setString(4, formatedTimeStamp);
