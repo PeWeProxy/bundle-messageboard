@@ -10,11 +10,11 @@
 		<type>ResponseProcessingPlugin</type>
 	</types>
 	<parameters>
-		<param name="scriptUrl">${proxyurl}/FileSender/public/peweproxy_messageboard.js</param>
+		<param name="scriptUrl">${plugins-core:proxyurl}/FileSender/public/peweproxy_messageboard.js</param>
 		<param name="additionalHTML">
 <![CDATA[
 		<script type="text/javascript">
-		var peweproxy_keywords_htdocs_dir = '${proxyurl}/FileSender/public/keywordsImages';
+		var peweproxy_keywords_htdocs_dir = '${plugins-core:proxyurl}/FileSender/public/keywordsImages';
 		</script>
 		<style type="text/css">
 			#peweproxy_addons_container{
@@ -34,13 +34,13 @@
 				right: 0;
 				display: block;
 				background-repeat: no-repeat;
-				background-image: url('${proxyurl}/FileSender/public/messageboardImages/button_small.png');
+				background-image: url('${plugins-core:proxyurl}/FileSender/public/messageboardImages/button_small.png');
 				width: 12px;
 				height: 12px;
 			}
 
 			a.__peweproxy_msgboard_button{
-				background-image:url("${proxyurl}/FileSender/public/messageboardImages/icon_messageboard.png");
+				background-image:url("${plugins-core:proxyurl}/FileSender/public/messageboardImages/icon_messageboard.png");
 				color:#2F2F2F;
 				display:block;
 				font-size:10px;
@@ -56,7 +56,7 @@
 			}
 
 			a.__peweproxy_keywords_button{
-				background-image:url("${proxyurl}/FileSender/public/keywordsImages/icon_keywords.png");
+				background-image:url("${plugins-core:proxyurl}/FileSender/public/keywordsImages/icon_keywords.png");
 				display:block;
 				float:left;
 				height:21px;
@@ -79,12 +79,12 @@
 			div.__peweproxy_messageboard_head{
 				height: 25px;
 				width: 332px;
-				background-image: url('${proxyurl}/FileSender/public/messageboardImages/messageboard_top.png');
+				background-image: url('${plugins-core:proxyurl}/FileSender/public/messageboardImages/messageboard_top.png');
 				float: left;
 			}
 
 			div.__peweproxy_messageboard_body{
-				background-image:url("${proxyurl}/FileSender/public/messageboardImages/messageboard_body.png");
+				background-image:url("${plugins-core:proxyurl}/FileSender/public/messageboardImages/messageboard_body.png");
 				float:left;
 				padding:0 20px 0 16px;
 				width:296px;
@@ -93,7 +93,7 @@
 			div.__peweproxy_messageboard_foot{
 				height: 16px;
 				width: 332px;
-				background-image: url('${proxyurl}/FileSender/public/messageboardImages/messageboard_bottom.png');
+				background-image: url('${plugins-core:proxyurl}/FileSender/public/messageboardImages/messageboard_bottom.png');
 				float: left;
 			}
 
@@ -104,7 +104,7 @@
 				top: 1px;
 				height: 22px;
 				width: 22px;
-				background-image: url('${proxyurl}/FileSender/public/messageboardImages/close_button.png');
+				background-image: url('${plugins-core:proxyurl}/FileSender/public/messageboardImages/close_button.png');
 				background-position: top;
 			}
 
@@ -116,7 +116,7 @@
 				position: absolute;
 				top: 0;
 				right: 0;
-				background-image: url('${proxyurl}/FileSender/public/messageboardImages/button_banner.png');
+				background-image: url('${plugins-core:proxyurl}/FileSender/public/messageboardImages/button_banner.png');
 				width: 59px;
 				height: 30px;
 			}
@@ -131,10 +131,10 @@
 				padding-left:30px;
 			}
 			div#peweproxy_messageboard span.header{
-				background-image:url("${proxyurl}/FileSender/public/messageboardImages/bubble.png");
+				background-image:url("${plugins-core:proxyurl}/FileSender/public/messageboardImages/bubble.png");
 			}
 			div#peweproxy_keywords span.header{
-				background-image:url("${proxyurl}/FileSender/public/keywordsImages/icon_keywords.png");
+				background-image:url("${plugins-core:proxyurl}/FileSender/public/keywordsImages/icon_keywords.png");
 				margin-bottom: 10px;
 			}
 
@@ -305,7 +305,7 @@
 							</span>
 						</span>
 						<textarea id="peweproxy_messageboard_text" class="empty" cols="34" rows="3">Sem vložte váš príspevok.</textarea>
-						<div id="peweproxy_messageboard_preloader"><img src="${proxyurl}/FileSender/public/messageboardImages/preloader.gif" alt="preloader"/></div>
+						<div id="peweproxy_messageboard_preloader"><img src="${plugins-core:proxyurl}/FileSender/public/messageboardImages/preloader.gif" alt="preloader"/></div>
 						<a href="#" class="submit" onclick="peweproxy_messageboard_send(); return false;">Odoslať</a>
 
 					</div>
@@ -329,12 +329,12 @@
 				div.__peweproxy_keywords_head{
 					height: 26px;
 					width: 433px;
-					background-image: url('${proxyurl}/FileSender/public/keywordsImages/keywords_top.png');
+					background-image: url('${plugins-core:proxyurl}/FileSender/public/keywordsImages/keywords_top.png');
 					float: left;
 				}
 
 				div.__peweproxy_keywords_body{
-					background-image:url("${proxyurl}/FileSender/public/keywordsImages/keywords_body.png");
+					background-image:url("${plugins-core:proxyurl}/FileSender/public/keywordsImages/keywords_body.png");
 					float:left;
 					padding:0 20px 0 16px;
 					width:397px;
@@ -343,7 +343,7 @@
 				div.__peweproxy_keywords_foot{
 					height: 15px;
 					width: 433px;
-					background-image: url('${proxyurl}/FileSender/public/keywordsImages/keywords_bottom.png');
+					background-image: url('${plugins-core:proxyurl}/FileSender/public/keywordsImages/keywords_bottom.png');
 					float: left;
 				}
 
@@ -354,7 +354,7 @@
 					top: 1px;
 					height: 22px;
 					width: 22px;
-					background-image: url('${proxyurl}/FileSender/public/keywordsImages/close_button.png');
+					background-image: url('${plugins-core:proxyurl}/FileSender/public/keywordsImages/close_button.png');
 					background-position: top;
 				}
 
