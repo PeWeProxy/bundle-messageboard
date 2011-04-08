@@ -7,10 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -20,7 +17,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import sk.fiit.peweproxy.headers.RequestHeader;
@@ -36,14 +32,15 @@ import sk.fiit.peweproxy.services.content.StringContentService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.DatabaseConnectionProviderService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.PageInformationProviderService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.services.common.SqlUtils;
-import sk.fiit.rabbit.adaptiveproxy.plugins.services.injector.JavaScriptInjectingProcessingPlugin;
+import sk.fiit.rabbit.adaptiveproxy.plugins.services.injector.ClientBubbleMenuProcessingPlugin;
 
 
-
-public class MessageboardComunicationProcessingPlugin  extends JavaScriptInjectingProcessingPlugin {
+public class MessageboardComunicationProcessingPlugin  extends ClientBubbleMenuProcessingPlugin {
 	
 	private String defaultLanguage;
 	private String defaultVisibility;
+	
+	
 	
 	@Override
 	public HttpResponse getResponse(ModifiableHttpRequest request, HttpMessageFactory messageFactory) {
@@ -52,33 +49,36 @@ public class MessageboardComunicationProcessingPlugin  extends JavaScriptInjecti
 		Map<String, String> postData = getPostDataFromRequest(stringContentService.getContent());
 		String content = "";
 		Connection connection = null;
-		try {
-			connection = request.getServicesHandle().getService(DatabaseConnectionProviderService.class).getDatabaseConnection();
-
-			if (request.getRequestHeader().getRequestURI().contains("action=setMessageboardNick")) {
-				content = this.setMessageboardNick(connection, postData.get("uid"), postData.get("nick"));
+		
+		if(postData != null && request.getServicesHandle().isServiceAvailable(DatabaseConnectionProviderService.class)) {				
+			try {
+				connection = request.getServicesHandle().getService(DatabaseConnectionProviderService.class).getDatabaseConnection();
+	
+				if (request.getRequestHeader().getRequestURI().contains("action=setMessageboardNick")) {
+					content = this.setMessageboardNick(connection, postData.get("uid"), postData.get("nick"));
+				}
+				if (request.getRequestHeader().getRequestURI().contains("action=getMessages")) {
+					content = this.getMessages(connection, Integer.parseInt(postData.get("from")), Integer.parseInt(postData.get("count")), Boolean.parseBoolean(postData.get("decorateLinks")), request.getRequestHeader().getField("Referer"));
+				}
+				if (request.getRequestHeader().getRequestURI().contains("action=messageboardNickExists")) {
+					content = this.messageboardNickExists(connection, postData.get("uid"), postData.get("nick")).toString();
+				}
+				if (request.getRequestHeader().getRequestURI().contains("action=addMessage")) {
+					content = this.addMessage(connection, postData.get("uid"), postData.get("nick"), postData.get("text"), request.getRequestHeader().getField("Referer"));
+				}
+				if (request.getRequestHeader().getRequestURI().contains("action=getUserPreferences")) {
+					content = this.getUserPreferences(connection, postData.get("uid")).toJSONString();
+				}
+				if (request.getRequestHeader().getRequestURI().contains("action=getMessageCount")) {
+					content = this.getMessageCount(connection, request.getRequestHeader().getField("Referer")) + "";
+				}
+				if (request.getRequestHeader().getRequestURI().contains("action=setShown")) {
+					content = this.setShown(connection, postData.get("uid"), postData.get("shown"));
+				}
+				
+			} finally {
+				SqlUtils.close(connection);
 			}
-			if (request.getRequestHeader().getRequestURI().contains("action=getMessages")) {
-				content = this.getMessages(connection, Integer.parseInt(postData.get("from")), Integer.parseInt(postData.get("count")), Boolean.parseBoolean(postData.get("decorateLinks")), request.getRequestHeader().getField("Referer"));
-			}
-			if (request.getRequestHeader().getRequestURI().contains("action=messageboardNickExists")) {
-				content = this.messageboardNickExists(connection, postData.get("uid"), postData.get("nick")).toString();
-			}
-			if (request.getRequestHeader().getRequestURI().contains("action=addMessage")) {
-				content = this.addMessage(connection, postData.get("uid"), postData.get("nick"), postData.get("text"), request.getRequestHeader().getField("Referer"));
-			}
-			if (request.getRequestHeader().getRequestURI().contains("action=getUserPreferences")) {
-				content = this.getUserPreferences(connection, postData.get("uid")).toJSONString();
-			}
-			if (request.getRequestHeader().getRequestURI().contains("action=getMessageCount")) {
-				content = this.getMessageCount(connection, request.getRequestHeader().getField("Referer")) + "";
-			}
-			if (request.getRequestHeader().getRequestURI().contains("action=setShown")) {
-				content = this.setShown(connection, postData.get("uid"), postData.get("shown"));
-			}
-			
-		} finally {
-			SqlUtils.close(connection);
 		}
 		
 		ModifiableHttpResponse httpResponse = messageFactory.constructHttpResponse(null, "text/html");

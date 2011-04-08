@@ -51,11 +51,14 @@ var temp = function($) {
             $(smallButtonSelector).addClass('hidden');   
             peweproxy_getMessages(0);
         }
+        /*
         $(smallButtonSelector).mouseenter(function(){
             $(peweproxy_addonIconBannerSelector).removeClass('hidden').fadeIn('fast', function(){
                 $(messageboardButonSelector).html(getMessageCount());
             });
         });
+        */
+        /*
         $(peweproxy_addonIconBannerSelector).mouseleave(function(){
             $(messageboardButonSelector).html('');
             if (renewSmallButton){
@@ -65,6 +68,7 @@ var temp = function($) {
 				$(this).addClass('hidden');
 			});
         });
+        */
         $(messageboardButonSelector).click(function(){
             setShown(true);
             $(this).blur();
