@@ -1,12 +1,11 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plugin SYSTEM "PluginConfiguration.dtd">
 <plugin>
 	<name>MessageboardComunicationProcessingPlugin</name>
 	<classLocation/>
 	<className>sk.fiit.rabbit.adaptiveproxy.plugins.services.messageboard.MessageboardComunicationProcessingPlugin</className>
 	<libraries>
-    		<lib>json_simple-1.1.jar</lib>
-    		<lib>log4j-1.2.15.jar</lib>
+    	<lib>json_simple-1.1.jar</lib>
   	</libraries>
 	<types>
 		<type>RequestProcessingPlugin</type>
@@ -17,11 +16,9 @@
 		<param name="generateResponse">true</param>
 		<param name="defaultLanguage">sk</param>
 		<param name="defaultVisibility">0</param>
-		<param name="XscriptUrl">${plugins-core:proxyurl}/FileSender/public/peweproxy_messageboard.js</param>
+		<param name="scriptUrl">${plugins-core:proxyurl}/FileSender/public/peweproxy_messageboard.js</param>
 				<param name="menuWindowHTML">
 <![CDATA[
-<script src='http://localhost:9666/FileSender/public/peweproxy_messageboard.js'></script>
-<script src="http://localhost:9666/FileSender/public/peweproxy_keywords.js"></script>
 
 <style type="text/css">
 
@@ -40,17 +37,6 @@
 				width:19px;
 				float: left;
 			}
-
-			a.__peweproxy_keywords_button{
-				background-image:url("${plugins-core:proxyurl}/FileSender/public/keywordsImages/icon_keywords.png");
-				display:block;
-				float:left;
-				height:21px;
-				margin-left:5px;
-				margin-top:2px;
-				width:16px;
-			}
-
 
 			div#peweproxy_addons_container div#peweproxy_messageboard{
 				position:absolute;
