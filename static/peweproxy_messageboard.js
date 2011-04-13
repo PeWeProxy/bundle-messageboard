@@ -10,6 +10,7 @@ var peweproxy_url_messageboard = 'adaptive-proxy/messageboard_call.html'
 
 var temp = function($) {
     $(document).ready(function(){
+    __ap_register_callback(function(){
         var userPreferences = getUserPreferences();
         if (userPreferences.messageboard_nick == null || userPreferences.messageboard_nick == ""){
             $('#peweproxy_messageboard_nick_info').html("Nemáte nastavené žiadne meno.");
@@ -51,24 +52,6 @@ var temp = function($) {
             $(smallButtonSelector).addClass('hidden');   
             peweproxy_getMessages(0);
         }
-        /*
-        $(smallButtonSelector).mouseenter(function(){
-            $(peweproxy_addonIconBannerSelector).removeClass('hidden').fadeIn('fast', function(){
-                $(messageboardButonSelector).html(getMessageCount());
-            });
-        });
-        */
-        /*
-        $(peweproxy_addonIconBannerSelector).mouseleave(function(){
-            $(messageboardButonSelector).html('');
-            if (renewSmallButton){
-                $(smallButtonSelector).removeClass('hidden');
-            }
-            $(this).fadeOut('fast',function(){
-				$(this).addClass('hidden');
-			});
-        });
-        */
         $(messageboardButonSelector).click(function(){
             setShown(true);
             $(this).blur();
@@ -87,6 +70,7 @@ var temp = function($) {
             $('#peweproxy_messageboard').fadeOut('fast');
             return false;
         });
+    });
     });
 
     $(document).scroll(function(){
