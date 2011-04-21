@@ -17,9 +17,9 @@
 		<param name="defaultLanguage">sk</param>
 		<param name="defaultVisibility">0</param>
 		<param name="scriptUrl">${plugins-core:proxyurl}/FileSender/public/peweproxy_messageboard.js</param>
-				<param name="menuWindowHTML">
+		<param name="buttonHTML"><![CDATA[<a href="#" class="__peweproxy_msgboard_button"></a>]]></param>
+		<param name="windowHTML">
 <![CDATA[
-
 <style type="text/css">
 
 			a.__peweproxy_msgboard_button{
@@ -267,11 +267,6 @@
 				</div>
 				<div class="__peweproxy_messageboard_foot"></div>
 			</div>
-]]>
-		</param>
-		<param name="menuButtonHTML">
-<![CDATA[
-	<a href="#" class="__peweproxy_msgboard_button"></a>
 ]]>
 		</param>
 		</parameters>

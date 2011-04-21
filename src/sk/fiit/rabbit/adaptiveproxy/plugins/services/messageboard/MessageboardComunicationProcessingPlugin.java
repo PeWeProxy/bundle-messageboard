@@ -31,16 +31,13 @@ import sk.fiit.peweproxy.services.content.ModifiableStringService;
 import sk.fiit.peweproxy.services.content.StringContentService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.DatabaseConnectionProviderService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.PageInformationProviderService;
+import sk.fiit.rabbit.adaptiveproxy.plugins.services.bubble.BubbleMenuProcessingPlugin;
 import sk.fiit.rabbit.adaptiveproxy.plugins.services.common.SqlUtils;
-import sk.fiit.rabbit.adaptiveproxy.plugins.services.injector.ClientBubbleMenuProcessingPlugin;
 
-
-public class MessageboardComunicationProcessingPlugin  extends ClientBubbleMenuProcessingPlugin {
+public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessingPlugin {
 	
 	private String defaultLanguage;
 	private String defaultVisibility;
-	
-	
 	
 	@Override
 	public HttpResponse getResponse(ModifiableHttpRequest request, HttpMessageFactory messageFactory) {
