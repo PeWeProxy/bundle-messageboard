@@ -30,9 +30,8 @@ import sk.fiit.peweproxy.services.ProxyService;
 import sk.fiit.peweproxy.services.content.ModifiableStringService;
 import sk.fiit.peweproxy.services.content.StringContentService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.DatabaseConnectionProviderService;
-import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.PageInformationProviderService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.services.bubble.BubbleMenuProcessingPlugin;
-import sk.fiit.rabbit.adaptiveproxy.plugins.services.common.SqlUtils;
+import sk.fiit.rabbit.adaptiveproxy.plugins.utils.SqlUtils;
 
 public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessingPlugin {
 	
@@ -377,10 +376,9 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		
 	@Override
 	public boolean start (PluginProperties props) {
-		super.start(props);
 		this.defaultLanguage = props.getProperty("defaultLanguage", "sk");
 		this.defaultVisibility = props.getProperty("defaultVisibility", "0");
-		return true;
+		return super.start(props);
 	}
 
 	@Override
@@ -390,13 +388,5 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		super.desiredRequestServices(desiredServices, clientRQHeader);
 		desiredServices.add(ModifiableStringService.class); //FIXME: toto je docasny hack kvoli late processingu, spravne tu ma byt len StringContentService
 		desiredServices.add(DatabaseConnectionProviderService.class);
-	}
-	
-	@Override
-	public void desiredResponseServices (
-			Set<Class<? extends ProxyService>> desiredServices,
-			ResponseHeader webRPHeader) {
-		super.desiredResponseServices(desiredServices, webRPHeader);
-		desiredServices.add(PageInformationProviderService.class);
 	}
 }
