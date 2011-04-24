@@ -1,16 +1,10 @@
 package sk.fiit.rabbit.adaptiveproxy.plugins.services.messageboard;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +14,6 @@ import java.util.regex.Pattern;
 import org.json.simple.JSONObject;
 
 import sk.fiit.peweproxy.headers.RequestHeader;
-import sk.fiit.peweproxy.headers.ResponseHeader;
 import sk.fiit.peweproxy.messages.HttpMessageFactory;
 import sk.fiit.peweproxy.messages.HttpResponse;
 import sk.fiit.peweproxy.messages.ModifiableHttpRequest;
@@ -28,9 +21,11 @@ import sk.fiit.peweproxy.messages.ModifiableHttpResponse;
 import sk.fiit.peweproxy.plugins.PluginProperties;
 import sk.fiit.peweproxy.services.ProxyService;
 import sk.fiit.peweproxy.services.content.ModifiableStringService;
-import sk.fiit.peweproxy.services.content.StringContentService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.DatabaseConnectionProviderService;
+import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.PostDataParserService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.services.bubble.BubbleMenuProcessingPlugin;
+import sk.fiit.rabbit.adaptiveproxy.plugins.utils.JdbcTemplate;
+import sk.fiit.rabbit.adaptiveproxy.plugins.utils.JdbcTemplate.ResultProcessor;
 import sk.fiit.rabbit.adaptiveproxy.plugins.utils.SqlUtils;
 
 public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessingPlugin {
@@ -40,40 +35,43 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 	
 	@Override
 	public HttpResponse getResponse(ModifiableHttpRequest request, HttpMessageFactory messageFactory) {
-		StringContentService stringContentService = request.getServicesHandle().getService(StringContentService.class);
-
-		Map<String, String> postData = getPostDataFromRequest(stringContentService.getContent());
 		String content = "";
-		Connection connection = null;
 		
-		if(postData != null && request.getServicesHandle().isServiceAvailable(DatabaseConnectionProviderService.class)) {				
-			try {
-				connection = request.getServicesHandle().getService(DatabaseConnectionProviderService.class).getDatabaseConnection();
-	
-				if (request.getRequestHeader().getRequestURI().contains("action=setMessageboardNick")) {
-					content = this.setMessageboardNick(connection, postData.get("uid"), postData.get("nick"));
+		if(request.getServicesHandle().isServiceAvailable(PostDataParserService.class)) {
+			Map<String, String> postData = request.getServicesHandle().getService(PostDataParserService.class).getPostData();
+			
+			Connection connection = null;
+			
+			if(postData != null && request.getServicesHandle().isServiceAvailable(DatabaseConnectionProviderService.class)) {				
+				try {
+					connection = request.getServicesHandle().getService(DatabaseConnectionProviderService.class).getDatabaseConnection();
+					JdbcTemplate jdbc = new JdbcTemplate(connection);
+		
+					if (request.getRequestHeader().getRequestURI().contains("action=setMessageboardNick")) {
+						content = this.setMessageboardNick(jdbc, postData.get("uid"), postData.get("nick"));
+					}
+					if (request.getRequestHeader().getRequestURI().contains("action=getMessages")) {
+						content = this.getMessages(jdbc, Integer.parseInt(postData.get("from")), Integer.parseInt(postData.get("count")), Boolean.parseBoolean(postData.get("decorateLinks")), request.getRequestHeader().getField("Referer"));
+					}
+					if (request.getRequestHeader().getRequestURI().contains("action=messageboardNickExists")) {
+						content = this.messageboardNickExists(jdbc, postData.get("nick")).toString();
+					}
+					if (request.getRequestHeader().getRequestURI().contains("action=addMessage")) {
+						content = this.addMessage(jdbc, postData.get("uid"), postData.get("nick"), postData.get("text"), request.getRequestHeader().getField("Referer"));
+					}
+					if (request.getRequestHeader().getRequestURI().contains("action=getUserPreferences")) {
+						content = this.getUserPreferences(jdbc, postData.get("uid")).toJSONString();
+					}
+					if (request.getRequestHeader().getRequestURI().contains("action=getMessageCount")) {
+						content = this.getMessageCount(jdbc, request.getRequestHeader().getField("Referer")) + "";
+					}
+					if (request.getRequestHeader().getRequestURI().contains("action=setShown")) {
+						content = this.setShown(jdbc, postData.get("uid"), postData.get("shown"));
+					}
+					
+				} finally {
+					SqlUtils.close(connection);
 				}
-				if (request.getRequestHeader().getRequestURI().contains("action=getMessages")) {
-					content = this.getMessages(connection, Integer.parseInt(postData.get("from")), Integer.parseInt(postData.get("count")), Boolean.parseBoolean(postData.get("decorateLinks")), request.getRequestHeader().getField("Referer"));
-				}
-				if (request.getRequestHeader().getRequestURI().contains("action=messageboardNickExists")) {
-					content = this.messageboardNickExists(connection, postData.get("uid"), postData.get("nick")).toString();
-				}
-				if (request.getRequestHeader().getRequestURI().contains("action=addMessage")) {
-					content = this.addMessage(connection, postData.get("uid"), postData.get("nick"), postData.get("text"), request.getRequestHeader().getField("Referer"));
-				}
-				if (request.getRequestHeader().getRequestURI().contains("action=getUserPreferences")) {
-					content = this.getUserPreferences(connection, postData.get("uid")).toJSONString();
-				}
-				if (request.getRequestHeader().getRequestURI().contains("action=getMessageCount")) {
-					content = this.getMessageCount(connection, request.getRequestHeader().getField("Referer")) + "";
-				}
-				if (request.getRequestHeader().getRequestURI().contains("action=setShown")) {
-					content = this.setShown(connection, postData.get("uid"), postData.get("shown"));
-				}
-				
-			} finally {
-				SqlUtils.close(connection);
 			}
 		}
 		
@@ -84,258 +82,92 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		return httpResponse;
 	}
 	
-	private String setShown (Connection connection, String uid, String shown) {
-		PreparedStatement stmt = null;
-		
-		try {
-			stmt = connection.prepareStatement("UPDATE `messageboard_user_preferences` SET `visibility` = ? WHERE `userid` = ?;");
-			stmt.setInt(1, Integer.parseInt(shown));
-			stmt.setString(2, uid);
-
-			stmt.execute();
-			
-			return "OK";
-		} catch (SQLException e) {
-			logger.error("Could not get messageboard count ", e);
-			return "FAIL";
-		} finally {
-			SqlUtils.close(stmt);
-		}
+	private String setShown (JdbcTemplate jdbc, String uid, String shown) {
+		jdbc.update("UPDATE messageboard_user_preferences SET visibility = ? WHERE userid = ?", new Object[] { shown, uid });
+		return "OK";
 	}
 	
-	private int getMessageCount (Connection connection, String url) {
-		PreparedStatement stmt = null;
-		int messageCount = 0;
-		
-		try {
-			stmt = connection.prepareStatement("SELECT COUNT(*) FROM `messageboard_messages` WHERE `url` = ?;");
-			stmt.setString(1, url);
-
-			stmt.execute();
-			ResultSet rs = stmt.getResultSet();
-			
-			while (rs.next()) {
-				messageCount = rs.getInt(1);
-			}
-			
-		} catch (SQLException e) {
-			logger.error("Could not get messageboard count ", e);
-		} finally {
-			SqlUtils.close(stmt);
-		}
-		
-		return messageCount;
+	private int getMessageCount (JdbcTemplate jdbc, String url) {
+		return jdbc.queryFor("SELECT COUNT(*) FROM messageboard_messages WHERE url = ?", new Object[] { url }, Integer.class);
 	}
 	
-	private JSONObject getUserPreferences (Connection connection, String uid) {
-		PreparedStatement stmt = null;
-		JSONObject userPreferences = new JSONObject();
-		
-		try {
-			stmt = connection.prepareStatement("SELECT * FROM `messageboard_user_preferences` WHERE `userid` = ? LIMIT 1;");
-			stmt.setString(1, uid);
-
-			stmt.execute();
-			ResultSet rs = stmt.getResultSet();
-
-			if (rs.next()) {
-				userPreferences.put("messageboard_nick", rs.getString(3));
-				userPreferences.put("language", rs.getString(4));
-				userPreferences.put("visibility", rs.getString(5));
-				
-			} else {
-				stmt = connection.prepareStatement("INSERT INTO `messageboard_user_preferences` (`userid`, `language`, `visibility`) VALUES (?, ?, ?);");
-				stmt.setString(1, uid);
-				stmt.setString(2, this.defaultLanguage);
-				stmt.setString(3, this.defaultVisibility);
-				
-				stmt.execute();
-				
-				userPreferences.put("messageboard_nick", "");
-				userPreferences.put("language", this.defaultLanguage);
-				userPreferences.put("visibility", this.defaultVisibility);
+	private JSONObject getUserPreferences (JdbcTemplate jdbc, String uid) {
+		JSONObject userPreferences = 
+			jdbc.find("SELECT messageboard_nick, language, visibility FROM messageboard_user_preferences WHERE userid = ? LIMIT 1", 
+				new Object[] { uid }, 
+				new ResultProcessor<JSONObject>() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public JSONObject processRow(ResultSet rs) throws SQLException {
+				JSONObject userPreferences = new JSONObject();
+				userPreferences.put("messageboard_nick", rs.getString("messageboard_nick"));
+				userPreferences.put("language", rs.getString("language"));
+				userPreferences.put("visibility", rs.getString("visibility"));
+				return userPreferences;
 			}
-			
-		} catch (SQLException e) {
-			logger.error("Could select messageboard nick count ", e);
-		} finally {
-			SqlUtils.close(stmt);
-		}
+		});
 		
+		if(userPreferences == null) {
+			jdbc.insert("INSERT INTO messageboard_user_preferences (userid, language, visibility) VALUES (?, ?, ?)", 
+					new Object[] { "", this.defaultLanguage, this.defaultVisibility } );
+		}
 		
 		return userPreferences;
 	}
 	
-	private String setMessageboardNick (Connection connection, String uid, String nick) {
-		PreparedStatement nickExists_stmt = null;
-		PreparedStatement updateNick_stmt = null;
-		
-		try {
-			int rowCount = 0;
-			nickExists_stmt = connection.prepareStatement("SELECT COUNT(*) FROM `messageboard_user_preferences` WHERE `messageboard_nick` = ? LIMIT 1;");
-			nickExists_stmt.setString(1, nick);
-
-			nickExists_stmt.execute();
-			ResultSet rs = nickExists_stmt.getResultSet();
-
-			while (rs.next()) {
-				rowCount = rs.getInt(1);
-			}
-			if (rowCount > 0) {
-				return "NICK_EXISTS";
-			}
-			
-			try {
-				updateNick_stmt = connection.prepareStatement("UPDATE `messageboard_user_preferences` SET `messageboard_nick` = ? WHERE `userid` = ? LIMIT 1;");
-				updateNick_stmt.setString(1, nick);
-				updateNick_stmt.setString(2, uid);
-
-				updateNick_stmt.execute();
-			} catch (SQLException e) {
-				logger.error("Could select messageboard nick count ", e);
-				return "FAIL";
-			} finally {
-				SqlUtils.close(updateNick_stmt);
-			}
-			
-			return "OK";
-			
-		} catch (SQLException e) {
-			logger.error("Could select messageboard nick count ", e);
-			return "FAIL";
-		} finally {
-			SqlUtils.close(nickExists_stmt);
+	private String setMessageboardNick (JdbcTemplate jdbc, String uid, String nick) {
+		if(messageboardNickExists(jdbc, nick)) {
+			return "NICK_EXISTS";
 		}
+		
+		jdbc.update("UPDATE messageboard_user_preferences SET messageboard_nick = ? WHERE userid = ? LIMIT 1", new Object[] { nick, uid } );
+		return "OK";
 	}
 
-	private String getMessages (Connection connection, int from, int count, boolean decorateLinks, String url) {
-		PreparedStatement stmt = null;
-		int messageCount = 0;
-		String formatedTime = "";
-		JSONObject messageList = new JSONObject();
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private String getMessages (JdbcTemplate jdbc, int from, int count, boolean decorateLinks, String url) {
 		
-		LinkedList l1 = new LinkedList();
-		LinkedHashMap m1;
-		
-		try {
-			stmt = connection.prepareStatement("SELECT `messageboard_nick`, `datetime`, `text`, `url` FROM `messageboard_messages` LEFT JOIN `messageboard_user_preferences` ON `messageboard_messages`.`userid` = `messageboard_user_preferences`.`userid` WHERE `url` = ? ORDER BY `messageboard_messages`.`id` DESC LIMIT ?, ?;");
-			stmt.setString(1, url);
-			stmt.setInt(2, from);
-			stmt.setInt(3, count);
-			
-			stmt.execute();
-			ResultSet rs = stmt.getResultSet();
-			rs.last();
-			
-			do {
-				m1 = new LinkedHashMap();
-				m1.put("text", decorateLinks(rs.getString(3)));
-				m1.put("nick", rs.getString(1));
-				m1.put("time", formatDatetime(rs.getString(2)));
-				l1.add(m1);
-			} while (rs.previous());
-		} catch (SQLException e) {
-			logger.error("Could select messages ", e);
-		} finally {
-			SqlUtils.close(stmt);
-		}
-		
-		try {
-			stmt = connection.prepareStatement("SELECT COUNT(*) FROM `messageboard_messages` WHERE `url` = ?;");
-			stmt.setString(1, url);
-
-			stmt.execute();
-			ResultSet rs = stmt.getResultSet();
-
-			while (rs.next()) {
-				messageCount = rs.getInt(1);
+		List<LinkedHashMap> messages = jdbc.findAll(
+			"SELECT messageboard_nick, datetime, text " +
+			"  FROM messageboard_messages m " +
+			"  LEFT JOIN messageboard_user_preferences u ON m.userid = m.userid " +
+			" WHERE url = ? " +
+			"ORDER BY m.id DESC " +
+			"LIMIT ?, ?", 
+			new Object[] {url, from, count }, 
+			new ResultProcessor<LinkedHashMap>() {
+				@Override
+				public LinkedHashMap processRow(ResultSet rs) throws SQLException {
+					LinkedHashMap m = new LinkedHashMap();
+					m.put("text", decorateLinks(rs.getString("text")));
+					m.put("nick", rs.getString("messageboard_nick"));
+					m.put("time", formatDatetime(rs.getString("datetime")));
+					return m;
+				}
 			}
-		} catch (SQLException e) {
-			logger.error("Could get message count ", e);
-		} finally {
-			SqlUtils.close(stmt);
-		}
+		);
 		
-		messageList.put("messages", l1);
+		long messageCount = jdbc.queryFor("SELECT COUNT(*) FROM messageboard_messages WHERE url = ?", new Object[] { url }, Long.class);
+
+		JSONObject messageList = new JSONObject();
+		messageList.put("messages", messages);
 		messageList.put("total", messageCount);
 		
-		String jsonString = messageList.toJSONString();
-		return jsonString;
+		return messageList.toJSONString();
 	}
 	
-	private Boolean messageboardNickExists (Connection connection, String uid, String nick) {
-		PreparedStatement stmt = null;
-		int rowCount = 1;
+	private Boolean messageboardNickExists (JdbcTemplate jdbc, String nick) {
+		long nickExists = jdbc.queryFor("SELECT COUNT(*) FROM messageboard_user_preferences WHERE messageboard_nick = ? LIMIT 1", 
+				new Object[] { nick }, Long.class);
 		
-		try {
-			stmt = connection.prepareStatement("SELECT COUNT(*) FROM `messageboard_user_preferences` WHERE `messageboard_nick` = ? LIMIT 1;");
-			stmt.setString(1, nick);
-
-			stmt.execute();
-			ResultSet rs = stmt.getResultSet();
-
-			while (rs.next()) {
-				rowCount = rs.getInt(1);
-			}
-			
-		} catch (SQLException e) {
-			logger.error("Could select messageboard nick count ", e);
-		} finally {
-			SqlUtils.close(stmt);
-		}
-		
-		if (rowCount > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return nickExists > 0;
 	}
 	
-	private String addMessage (Connection connection, String uid, String nick, String messageText, String url) {
-		PreparedStatement stmt = null;
-		java.util.Date today = new java.util.Date();
-		String timestamp = new Timestamp(today.getTime()).toString();
-		String formatedTimeStamp = timestamp.substring(0, timestamp.indexOf("."));
+	private String addMessage (JdbcTemplate jdbc, String uid, String nick, String messageText, String url) {
+		jdbc.insert("INSERT INTO messageboard_messages (userid, datetime, url, text) VALUES (?, NOW(), ?, ?)", 
+				new Object[] { uid, url, messageText });
 		
-		messageText = messageText.replaceAll("\\<.*?>","");
-		
-		try {
-			stmt = connection.prepareStatement("INSERT INTO `messageboard_messages` (`userid`, `datetime`, `url`, `text`) VALUES (?, ?, ?, ?);");
-			stmt.setString(1, uid);
-			stmt.setString(2, formatedTimeStamp);
-			stmt.setString(3, url);
-			stmt.setString(4, messageText);
-
-			stmt.execute();
-			
-			return "OK";
-		} catch (SQLException e) {
-			logger.error("Could select messageboard nick count ", e);
-			return "FAIL";
-		} finally {
-			SqlUtils.close(stmt);
-		}
-	}
-	
-	private Map<String, String> getPostDataFromRequest (String requestContent) {
-		try {
-			requestContent = URLDecoder.decode(requestContent, "utf-8");
-		} catch (UnsupportedEncodingException e) {
-			logger.warn(e);
-		}
-		Map<String, String> postData = new HashMap<String, String>();
-		String attributeName;
-		String attributeValue;
-
-		for (String postPair : requestContent.split("&")) {
-			if (postPair.split("=").length == 2) {
-				attributeName = postPair.split("=")[0];
-				attributeValue = postPair.split("=")[1];
-				postData.put(attributeName, attributeValue);
-			}
-		}
-
-		return postData;
+		return "OK";
 	}
 	
 	private String decorateLinks(String input) {

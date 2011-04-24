@@ -72,12 +72,6 @@ var temp = function($) {
         });
     });
     });
-
-    $(document).scroll(function(){
-        $('#peweproxy_addons_container').animate({
-            'top':$(document).scrollTop()
-        }, 'fast');
-    });
 } (adaptiveProxyJQuery);
 
 function peweproxy_messageboard_send(){
