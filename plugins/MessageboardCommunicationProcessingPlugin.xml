@@ -255,13 +255,13 @@
 							</span>
 
 							<span id="peweproxy_messageboard_change_nick" class="hidden">
-								<input maxlength="12" type="text" value="" onkeypress="peweproxy_changeNickInputHandleEnter(event)" />
-								<a href="#" onclick="peweproxy_messageboardChangeNick(); return false;">uložiť</a>
+								<input maxlength="12" type="text" value="" onkeypress="peweproxy.modules.messageboard.changeNickInputHandleEnter(event)" />
+								<a href="#" onclick="peweproxy.modules.messageboard.messageboardChangeNick(); return false;">uložiť</a>
 							</span>
 						</span>
 						<textarea id="peweproxy_messageboard_text" class="empty" cols="34" rows="3">Sem vložte váš príspevok.</textarea>
 						<div id="peweproxy_messageboard_preloader"><img src="${plugins-core:assets-path}/messageboardImages/preloader.gif" alt="preloader"/></div>
-						<a href="#" class="submit" onclick="peweproxy_messageboard_send(); return false;">Odoslať</a>
+						<a href="#" class="submit" onclick="peweproxy.modules.messageboard.send(); return false;">Odoslať</a>
 
 					</div>
 				</div>
