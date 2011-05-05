@@ -130,7 +130,7 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		List<LinkedHashMap> messages = jdbc.findAll(
 			"SELECT messageboard_nick, datetime, text " +
 			"  FROM messageboard_messages m " +
-			"  LEFT JOIN messageboard_user_preferences u ON m.userid = m.userid " +
+			"  LEFT JOIN messageboard_user_preferences u ON m.userid = u.userid " +
 			" WHERE url = ? " +
 			"ORDER BY m.id DESC " +
 			"LIMIT ?, ?", 
