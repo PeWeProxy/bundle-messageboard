@@ -10,7 +10,6 @@ peweproxy.register_module('messageboard', function($) {
 	
 	var peweproxy_url_messageboard = 'adaptive-proxy/messageboard_call.html'
 	
-	var temp = function($) {
 	    $(document).ready(function(){
 	    __ap_register_callback(function(){
 	        var userPreferences = getUserPreferences();
@@ -74,10 +73,8 @@ peweproxy.register_module('messageboard', function($) {
 	        });
 	    });
 	    });
-	} (adaptiveProxyJQuery);
 	
 	this.send = function(){
-	    var temp = function($) {
 	        text_element = $('#peweproxy_messageboard_text');
 	        text = text_element.val();
 	        nick = $('#peweproxy_messageboard_change_nick input').val();
@@ -101,7 +98,6 @@ peweproxy.register_module('messageboard', function($) {
 	                alert("Správu sa nepodarilo pridať. Skúste to znova.")
 	            }
 	        });
-	    } (adaptiveProxyJQuery);
 	}
 	
 	var send = this.send;
@@ -113,7 +109,6 @@ peweproxy.register_module('messageboard', function($) {
 	}
 	
 	this.messageboardChangeNick = function(){
-	    var temp = function($) {
 	        nick = $('#peweproxy_messageboard_change_nick input').val();
 	        if ($.trim(nick) == "") {
 	            alert("Meno nesmie byť prázdne.");
@@ -141,11 +136,9 @@ peweproxy.register_module('messageboard', function($) {
 	                alert("Meno sa nepodarilo uložiť, skúste to ešte raz.");
 	            }
 	        });
-	    } (adaptiveProxyJQuery);
 	}
 	
 	this.getMessages = function(from){
-	    var temp = function($) {
 	        if ($('#peweproxy_messageboard').css('display') == 'block'){
 	          $.post(peweproxy_url_messageboard+"?action=getMessages", {
 	              from : from,
@@ -163,7 +156,6 @@ peweproxy.register_module('messageboard', function($) {
 	              $('#peweproxy_messages').html(messages);                
 	          });
 	        }
-	    } (adaptiveProxyJQuery);
 	}
 	
 	var getMessages = this.getMessages;
@@ -206,19 +198,16 @@ peweproxy.register_module('messageboard', function($) {
 	}
 	
 	var setShown = function(shown){
-	    var temp = function($) {
 	        shown = shown ? 1 : 0;
 	        $.post(peweproxy_url_messageboard+'?action=setShown', {
 	            shown: shown,
 	            uid: __peweproxy_uid
 	        });
 	
-	    } (adaptiveProxyJQuery);
 	}
 	
 	var getMessageCount = function(){
 	    var retVal;
-	    var temp = function($) {
 	        retVal = $.ajax({
 	            async: false,
 	            url: peweproxy_url_messageboard+"?action=getMessageCount",
@@ -227,13 +216,11 @@ peweproxy.register_module('messageboard', function($) {
 	                action : 'getMessageCount'
 	            }
 	        }).responseText;
-	    } (adaptiveProxyJQuery);
 	    return retVal;
 	}
 	
 	var getUserPreferences = function(){
 	    var retVal;
-	    var temp = function($) {
 	        retVal = $.ajax({
 	            async: false,
 	            url: peweproxy_url_messageboard+"?action=getUserPreferences",
@@ -242,7 +229,6 @@ peweproxy.register_module('messageboard', function($) {
 	            },
 	            type: 'POST'
 	        }).responseText;
-	    } (adaptiveProxyJQuery);
 	    return eval('('+retVal+')');
 	}
 
