@@ -11,8 +11,15 @@ peweproxy.register_module('messageboard', function($) {
 	var peweproxy_url_messageboard = 'adaptive-proxy/messageboard_call.html'
 	
 	    $(document).ready(function(){
-	    __ap_register_callback(function(){
-	        var userPreferences = getUserPreferences();
+	    	__ap_register_callback(function(){
+	        var userPreferences = $.parseJSON($.ajax({
+	            async: false,
+	            url: peweproxy_url_messageboard+"?action=getUserPreferences",
+	            data: {
+	                uid: __peweproxy_uid
+	            },
+	            type: 'POST'
+	        }).responseText);
 	        if (userPreferences.messageboard_nick == null || userPreferences.messageboard_nick == ""){
 	            $('#peweproxy_messageboard_nick_info').html("Nemáte nastavené žiadne meno.");
 	            $('#peweproxy_messageboard_nick span').html("");
@@ -219,7 +226,7 @@ peweproxy.register_module('messageboard', function($) {
 	    return retVal;
 	}
 	
-	var getUserPreferences = function(){
+	this.getUserPreferences = function(){
 	    var retVal;
 	        retVal = $.ajax({
 	            async: false,
