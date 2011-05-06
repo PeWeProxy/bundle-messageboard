@@ -91,12 +91,12 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		return jdbc.queryFor("SELECT COUNT(*) FROM messageboard_messages WHERE url = ?", new Object[] { url }, Integer.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private JSONObject getUserPreferences (JdbcTemplate jdbc, String uid) {
 		JSONObject userPreferences = 
 			jdbc.find("SELECT messageboard_nick, language, visibility FROM messageboard_user_preferences WHERE userid = ? LIMIT 1", 
 				new Object[] { uid }, 
 				new ResultProcessor<JSONObject>() {
-			@SuppressWarnings("unchecked")
 			@Override
 			public JSONObject processRow(ResultSet rs) throws SQLException {
 				JSONObject userPreferences = new JSONObject();
@@ -110,6 +110,11 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		if(userPreferences == null) {
 			jdbc.insert("INSERT INTO messageboard_user_preferences (userid, language, visibility) VALUES (?, ?, ?)", 
 					new Object[] { "", this.defaultLanguage, this.defaultVisibility } );
+			userPreferences = new JSONObject();
+			userPreferences.put("messageboard_nick", "");
+			userPreferences.put("language", this.defaultLanguage);
+			userPreferences.put("visibility", this.defaultVisibility);
+			return userPreferences;
 		}
 		
 		return userPreferences;
@@ -130,7 +135,7 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		List<LinkedHashMap> messages = jdbc.findAll(
 			"SELECT messageboard_nick, datetime, text " +
 			"  FROM messageboard_messages m " +
-			"  LEFT JOIN messageboard_user_preferences u ON m.userid = m.userid " +
+			"  LEFT JOIN messageboard_user_preferences u ON m.userid = u.userid " +
 			" WHERE url = ? " +
 			"ORDER BY m.id DESC " +
 			"LIMIT ?, ?", 
