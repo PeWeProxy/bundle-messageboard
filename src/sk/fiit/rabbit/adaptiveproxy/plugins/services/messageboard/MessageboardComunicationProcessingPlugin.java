@@ -22,7 +22,7 @@ import sk.fiit.peweproxy.plugins.PluginProperties;
 import sk.fiit.peweproxy.services.ProxyService;
 import sk.fiit.peweproxy.services.content.ModifiableStringService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.DatabaseConnectionProviderService;
-import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.PostDataParserService;
+import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.RequestDataParserService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.services.bubble.BubbleMenuProcessingPlugin;
 import sk.fiit.rabbit.adaptiveproxy.plugins.utils.JdbcTemplate;
 import sk.fiit.rabbit.adaptiveproxy.plugins.utils.JdbcTemplate.ResultProcessor;
@@ -37,8 +37,8 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 	public HttpResponse getResponse(ModifiableHttpRequest request, HttpMessageFactory messageFactory) {
 		String content = "";
 		
-		if(request.getServicesHandle().isServiceAvailable(PostDataParserService.class)) {
-			Map<String, String> postData = request.getServicesHandle().getService(PostDataParserService.class).getPostData();
+		if(request.getServicesHandle().isServiceAvailable(RequestDataParserService.class)) {
+			Map<String, String> postData = request.getServicesHandle().getService(RequestDataParserService.class).getDataFromPOST();
 			
 			Connection connection = null;
 			
