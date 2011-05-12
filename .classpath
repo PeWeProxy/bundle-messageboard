@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="external_libs/json_simple-1.1.jar"/>
-	<classpathentry kind="lib" path="external_libs/log4j-1.2.15.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/adaptive-proxy"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/adaptive-proxy-plugins-core"/>
