@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.json.simple.JSONObject;
+import org.svenson.JSON;
 
 import sk.fiit.peweproxy.headers.RequestHeader;
 import sk.fiit.peweproxy.messages.HttpMessageFactory;
@@ -60,7 +60,7 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 						content = this.addMessage(jdbc, postData.get("uid"), postData.get("nick"), postData.get("text"), request.getRequestHeader().getField("Referer"));
 					}
 					if (request.getRequestHeader().getRequestURI().contains("action=getUserPreferences")) {
-						content = this.getUserPreferences(jdbc, postData.get("uid")).toJSONString();
+						content = this.getUserPreferences(jdbc, postData.get("uid"));
 					}
 					if (request.getRequestHeader().getRequestURI().contains("action=getMessageCount")) {
 						content = this.getMessageCount(jdbc, request.getRequestHeader().getField("Referer")) + "";
@@ -92,14 +92,15 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 	}
 	
 	@SuppressWarnings("unchecked")
-	private JSONObject getUserPreferences (JdbcTemplate jdbc, String uid) {
-		JSONObject userPreferences = 
+	private String getUserPreferences (JdbcTemplate jdbc, String uid) {
+		LinkedHashMap userPreferences = 
 			jdbc.find("SELECT messageboard_nick, language, visibility FROM messageboard_user_preferences WHERE userid = ? LIMIT 1", 
 				new Object[] { uid }, 
-				new ResultProcessor<JSONObject>() {
+				new ResultProcessor<LinkedHashMap>() {
 			@Override
-			public JSONObject processRow(ResultSet rs) throws SQLException {
-				JSONObject userPreferences = new JSONObject();
+			public LinkedHashMap processRow(ResultSet rs) throws SQLException {
+				LinkedHashMap userPreferences = new LinkedHashMap();
+//				JSONObject userPreferences = new JSONObject();
 				userPreferences.put("messageboard_nick", rs.getString("messageboard_nick"));
 				userPreferences.put("language", rs.getString("language"));
 				userPreferences.put("visibility", rs.getString("visibility"));
@@ -110,14 +111,13 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		if(userPreferences == null) {
 			jdbc.insert("INSERT INTO messageboard_user_preferences (userid, language, visibility) VALUES (?, ?, ?)", 
 					new Object[] { "", this.defaultLanguage, this.defaultVisibility } );
-			userPreferences = new JSONObject();
+			userPreferences = new LinkedHashMap();
 			userPreferences.put("messageboard_nick", "");
 			userPreferences.put("language", this.defaultLanguage);
 			userPreferences.put("visibility", this.defaultVisibility);
-			return userPreferences;
 		}
 		
-		return userPreferences;
+		return JSON.defaultJSON().forValue(userPreferences);
 	}
 	
 	private String setMessageboardNick (JdbcTemplate jdbc, String uid, String nick) {
@@ -154,11 +154,11 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		
 		long messageCount = jdbc.queryFor("SELECT COUNT(*) FROM messageboard_messages WHERE url = ?", new Object[] { url }, Long.class);
 
-		JSONObject messageList = new JSONObject();
+		LinkedHashMap messageList = new LinkedHashMap();
 		messageList.put("messages", messages);
 		messageList.put("total", messageCount);
 		
-		return messageList.toJSONString();
+		return JSON.defaultJSON().forValue(messageList);
 	}
 	
 	private Boolean messageboardNickExists (JdbcTemplate jdbc, String nick) {
