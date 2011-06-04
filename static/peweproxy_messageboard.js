@@ -11,12 +11,13 @@ peweproxy.register_module('messageboard', function($) {
 	var peweproxy_url_messageboard = 'adaptive-proxy/messageboard_call.html'
 	
 	    $(document).ready(function(){
-	    	__ap_register_callback(function(){
+	    	peweproxy.on_uid_ready(function(){alert("slon")});
+	    	peweproxy.on_uid_ready(function(){
 	        var userPreferences = $.parseJSON($.ajax({
 	            async: false,
 	            url: peweproxy_url_messageboard+"?action=getUserPreferences",
 	            data: {
-	                uid: __peweproxy_uid
+	                uid: peweproxy.uid
 	            },
 	            type: 'POST'
 	        }).responseText);
@@ -66,7 +67,7 @@ peweproxy.register_module('messageboard', function($) {
 	            renewSmallButton = false;
 	            $('#peweproxy_messageboard').hide().removeClass('hidden').fadeIn('fast');
 	            $(peweproxy_addonIconBannerSelector).addClass('hidden');
-	            $(smallButtonSelector).addClass('hidden');     
+	            $(smallButtonSelector).addClass('hidden');
 	            getMessages(0);
 	            return false;
 	        });
@@ -95,7 +96,7 @@ peweproxy.register_module('messageboard', function($) {
 	        }
 	        $.post(peweproxy_url_messageboard+"?action=addMessage", {
 	            text: text,
-	            uid: __peweproxy_uid
+	            uid: peweproxy.uid
 	        },
 	        function(response){
 	            if (response == 'OK'){
@@ -129,7 +130,7 @@ peweproxy.register_module('messageboard', function($) {
 	        }
 	        $.post(peweproxy_url_messageboard+"?action=setMessageboardNick", {
 	            nick: nick,
-	            uid: __peweproxy_uid
+	            uid: peweproxy.uid
 	        }, function(response){
 	            if (response == 'OK'){
 	                getMessages(actual_from);
@@ -208,7 +209,7 @@ peweproxy.register_module('messageboard', function($) {
 	        shown = shown ? 1 : 0;
 	        $.post(peweproxy_url_messageboard+'?action=setShown', {
 	            shown: shown,
-	            uid: __peweproxy_uid
+	            uid: peweproxy.uid
 	        });
 	
 	}
@@ -232,7 +233,7 @@ peweproxy.register_module('messageboard', function($) {
 	            async: false,
 	            url: peweproxy_url_messageboard+"?action=getUserPreferences",
 	            data: {
-	                uid: __peweproxy_uid
+	                uid: peweproxy.uid
 	            },
 	            type: 'POST'
 	        }).responseText;
