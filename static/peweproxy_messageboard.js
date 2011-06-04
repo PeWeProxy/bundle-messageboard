@@ -11,7 +11,6 @@ peweproxy.register_module('messageboard', function($) {
 	var peweproxy_url_messageboard = 'adaptive-proxy/messageboard_call.html'
 	
 	    $(document).ready(function(){
-	    	peweproxy.on_uid_ready(function(){alert("slon")});
 	    	peweproxy.on_uid_ready(function(){
 	        var userPreferences = $.parseJSON($.ajax({
 	            async: false,

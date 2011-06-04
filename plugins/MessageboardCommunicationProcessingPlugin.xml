@@ -241,7 +241,7 @@
 				<div class="__peweproxy_messageboard_body">
 					<span class="header">
 						<span class="left_floated">Diskusia k stránke</span>
-						<span class="right_floated language_bar"><a href="#" class="active" onclick="return false;">SK</a> | <a onclick="return false;" href="#">EN</a></span>
+						<!-- <span class="right_floated language_bar"><a href="#" class="active" onclick="return false;">SK</a> | <a onclick="return false;" href="#">EN</a></span> -->
 					</span>
 					<div class="block lister"><!-- content will be added by AJAX --></div>
 
