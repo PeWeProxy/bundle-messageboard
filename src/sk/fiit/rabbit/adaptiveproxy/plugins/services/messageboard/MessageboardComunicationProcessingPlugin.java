@@ -110,7 +110,7 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		
 		if(userPreferences == null) {
 			jdbc.insert("INSERT INTO messageboard_user_preferences (userid, language, visibility) VALUES (?, ?, ?)", 
-					new Object[] { "", this.defaultLanguage, this.defaultVisibility } );
+					new Object[] { uid, this.defaultLanguage, this.defaultVisibility } );
 			userPreferences = new LinkedHashMap();
 			userPreferences.put("messageboard_nick", "");
 			userPreferences.put("language", this.defaultLanguage);
