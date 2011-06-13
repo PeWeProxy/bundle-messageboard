@@ -23,6 +23,8 @@ import sk.fiit.peweproxy.services.ProxyService;
 import sk.fiit.peweproxy.services.content.ModifiableStringService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.DatabaseConnectionProviderService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.RequestDataParserService;
+import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.UserIdentificationService;
+import sk.fiit.rabbit.adaptiveproxy.plugins.servicedefinitions.UserPreferencesProviderService;
 import sk.fiit.rabbit.adaptiveproxy.plugins.services.bubble.BubbleMenuProcessingPlugin;
 import sk.fiit.rabbit.adaptiveproxy.plugins.utils.JdbcTemplate;
 import sk.fiit.rabbit.adaptiveproxy.plugins.utils.JdbcTemplate.ResultProcessor;
@@ -37,21 +39,27 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 	public HttpResponse getResponse(ModifiableHttpRequest request, HttpMessageFactory messageFactory) {
 		String content = "";
 		
-		if(request.getServicesHandle().isServiceAvailable(RequestDataParserService.class)) {
+		if(request.getServicesHandle().isServiceAvailable(RequestDataParserService.class) &&
+				request.getServicesHandle().isServiceAvailable(UserPreferencesProviderService.class) &&
+				request.getServicesHandle().isServiceAvailable(UserIdentificationService.class)) {
 			Map<String, String> postData = request.getServicesHandle().getService(RequestDataParserService.class).getDataFromPOST();
 			
 			Connection connection = null;
 			
+			UserPreferencesProviderService userPreferencesProvider = request.getServicesHandle().getService(UserPreferencesProviderService.class);
+			String userId = request.getServicesHandle().getService(UserIdentificationService.class).getClientIdentification();
+			
 			if(postData != null && request.getServicesHandle().isServiceAvailable(DatabaseConnectionProviderService.class)) {				
 				try {
+					
 					connection = request.getServicesHandle().getService(DatabaseConnectionProviderService.class).getDatabaseConnection();
 					JdbcTemplate jdbc = new JdbcTemplate(connection);
 		
 					if (request.getRequestHeader().getRequestURI().contains("action=setMessageboardNick")) {
-						content = this.setMessageboardNick(jdbc, postData.get("uid"), postData.get("nick"));
+						content = this.setMessageboardNick(jdbc, userPreferencesProvider, postData.get("uid"), postData.get("nick"));
 					}
 					if (request.getRequestHeader().getRequestURI().contains("action=getMessages")) {
-						content = this.getMessages(jdbc, Integer.parseInt(postData.get("from")), Integer.parseInt(postData.get("count")), Boolean.parseBoolean(postData.get("decorateLinks")), request.getRequestHeader().getField("Referer"));
+						content = this.getMessages(jdbc, userPreferencesProvider, userId, Integer.parseInt(postData.get("from")), Boolean.parseBoolean(postData.get("decorateLinks")), request.getRequestHeader().getField("Referer"));
 					}
 					if (request.getRequestHeader().getRequestURI().contains("action=messageboardNickExists")) {
 						content = this.messageboardNickExists(jdbc, postData.get("nick")).toString();
@@ -60,7 +68,7 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 						content = this.addMessage(jdbc, postData.get("uid"), postData.get("nick"), postData.get("text"), request.getRequestHeader().getField("Referer"));
 					}
 					if (request.getRequestHeader().getRequestURI().contains("action=getUserPreferences")) {
-						content = this.getUserPreferences(jdbc, postData.get("uid"));
+						content = this.getUserPreferences(jdbc, userPreferencesProvider, postData.get("uid"));
 					}
 					if (request.getRequestHeader().getRequestURI().contains("action=getMessageCount")) {
 						content = this.getMessageCount(jdbc, request.getRequestHeader().getField("Referer")) + "";
@@ -92,7 +100,7 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String getUserPreferences (JdbcTemplate jdbc, String uid) {
+	private String getUserPreferences (JdbcTemplate jdbc, final UserPreferencesProviderService userPreferencesProvider, final String uid) {
 		LinkedHashMap userPreferences = 
 			jdbc.find("SELECT messageboard_nick, language, visibility FROM messageboard_user_preferences WHERE userid = ? LIMIT 1", 
 				new Object[] { uid }, 
@@ -101,7 +109,7 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 			public LinkedHashMap processRow(ResultSet rs) throws SQLException {
 				LinkedHashMap userPreferences = new LinkedHashMap();
 //				JSONObject userPreferences = new JSONObject();
-				userPreferences.put("messageboard_nick", rs.getString("messageboard_nick"));
+				userPreferences.put("messageboard_nick", userPreferencesProvider.getProperty("nick", uid, "messageboard"));
 				userPreferences.put("language", rs.getString("language"));
 				userPreferences.put("visibility", rs.getString("visibility"));
 				return userPreferences;
@@ -120,23 +128,32 @@ public class MessageboardComunicationProcessingPlugin extends BubbleMenuProcessi
 		return JSON.defaultJSON().forValue(userPreferences);
 	}
 	
-	private String setMessageboardNick (JdbcTemplate jdbc, String uid, String nick) {
-		if(messageboardNickExists(jdbc, nick)) {
+	private String setMessageboardNick (JdbcTemplate jdbc, UserPreferencesProviderService userPreferencesProvider, String uid, String nick) {
+		/*if(messageboardNickExists(jdbc, nick)) {
 			return "NICK_EXISTS";
 		}
 		
-		jdbc.update("UPDATE messageboard_user_preferences SET messageboard_nick = ? WHERE userid = ? LIMIT 1", new Object[] { nick, uid } );
+		jdbc.update("UPDATE messageboard_user_preferences SET messageboard_nick = ? WHERE userid = ? LIMIT 1", new Object[] { nick, uid } );*/
+		userPreferencesProvider.setProperty("nick", nick, uid, "messageboard");
 		return "OK";
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private String getMessages (JdbcTemplate jdbc, int from, int count, boolean decorateLinks, String url) {
+	private String getMessages (JdbcTemplate jdbc, UserPreferencesProviderService userPreferencesProvider, String uid, int from, boolean decorateLinks, String url) {
+		
+		int count = 5;
+		
+		String preferenceCount = userPreferencesProvider.getProperty("count", uid, "messageboard");
+		
+		if (preferenceCount != null && preferenceCount != "") {
+			count = Integer.parseInt(preferenceCount);
+		}
 		
 		List<LinkedHashMap> messages = jdbc.findAll(
-			"SELECT messageboard_nick, datetime, text " +
+			"SELECT pr.preference_value AS messageboard_nick, datetime, text " +
 			"  FROM messageboard_messages m " +
-			"  LEFT JOIN messageboard_user_preferences u ON m.userid = u.userid " +
-			" WHERE url = ? " +
+			"  LEFT JOIN user_preferences pr ON m.userid = pr.user " +
+			" WHERE url = ? AND pr.preference_name LIKE 'messageboard_nick' " +
 			"ORDER BY m.id DESC " +
 			"LIMIT ?, ?", 
 			new Object[] {url, from, count }, 

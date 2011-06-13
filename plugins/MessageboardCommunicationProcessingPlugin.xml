@@ -18,6 +18,10 @@
 		<param name="defaultVisibility">0</param>
 		<param name="scriptUrl">${plugins-core:assets-path}/peweproxy_messageboard.js</param>
 		<param name="buttonHTML"><![CDATA[<a href="#" class="__peweproxy_msgboard_button"></a>]]></param>
+		<param name="preferenceNamespace">messageboard</param>
+		<param name="preferenceLabel">Messageboard</param>
+		<param name="preferences">nick|Prezývka,count|Počet príspevkov</param>
+		<param name="functionCall">peweproxy.modules.messageboard.refreshNick()</param>
 		<param name="windowHTML">
 <![CDATA[
 <style type="text/css">

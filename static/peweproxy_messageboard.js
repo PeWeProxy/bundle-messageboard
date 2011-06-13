@@ -137,6 +137,8 @@ peweproxy.register_module('messageboard', function($) {
 	                $('#peweproxy_messageboard_nick > span').html(nick);
 	                $('#peweproxy_messageboard_change_nick').hide();
 	                $('#peweproxy_messageboard_nick').show();
+	                $('#messageboard_nick .__peweproxy_preference_table_value .__peweproxy_preference_row_display').text(nick);
+	                $('#messageboard_nick .__peweproxy_preference_table_value .__peweproxy_preference_row_updating input').val(nick);
 	            } else if (response == 'NICK_EXISTS'){
 	                alert("Meno \""+nick +"\" už je obsadené, zvoľte prosím iné.")
 	            } else {
@@ -149,11 +151,10 @@ peweproxy.register_module('messageboard', function($) {
 	        if ($('#peweproxy_messageboard').css('display') == 'block'){
 	          $.post(peweproxy_url_messageboard+"?action=getMessages", {
 	              from : from,
-	              count: messages_per_page,
 	              decorateLinks: 1
 	          }, function(response){
 	              actual_from = from;
-	              response = eval('('+response+')');
+	              response = $.parseJSON(response);
 	              $('#peweproxy_messageboard div.lister').html(generateLister(from, response.total));
 	              messages = new String();
 	              for (var message in response.messages){
@@ -168,6 +169,9 @@ peweproxy.register_module('messageboard', function($) {
 	var getMessages = this.getMessages;
 	
 	var generateLister = function(from, total){
+		messages_per_page = $.trim($('#messageboard_count .__peweproxy_preference_table_value .__peweproxy_preference_row_display').text());
+		messages_per_page = messages_per_page == "" ? 5 : messages_per_page;
+	
 	    from++;
 	    var page = Math.ceil(from / messages_per_page);
 	    var pages = Math.ceil (total / messages_per_page);
@@ -236,7 +240,13 @@ peweproxy.register_module('messageboard', function($) {
 	            },
 	            type: 'POST'
 	        }).responseText;
-	    return eval('('+retVal+')');
+	    return $.parseJSON(retVal);
+	}
+
+	this.refreshNick = function(){
+		var new_nick = $.trim($("#messageboard_nick .__peweproxy_preference_table_value .__peweproxy_preference_row_display").text());
+		$("#peweproxy_messageboard_change_nick input").val(new_nick);
+		$("#peweproxy_messageboard_nick span").text(new_nick);
 	}
 
 });
